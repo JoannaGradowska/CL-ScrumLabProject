@@ -1,4 +1,5 @@
 MEMBERS = [
     'Mieszko Służewski',
-    "darth vader"
+    "darth vader",
+    'Grzesiek Woloch',
 ]
