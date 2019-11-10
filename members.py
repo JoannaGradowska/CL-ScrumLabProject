@@ -1,0 +1,3 @@
+MEMBERS = [
+    'Mieszko Służewski',
+]
