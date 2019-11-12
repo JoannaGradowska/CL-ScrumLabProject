@@ -12,11 +12,10 @@ class IndexView(View):
         return render(request, "test.html", ctx)
 
 
-class LocalPage(View):
+class LandingPage(View):
 
     def get(self, request):
         return render(request, "index.html", {
-            "actual_date": datetime.now(),
             'plans_counter': Plan.objects.all().count(),
         })
 
