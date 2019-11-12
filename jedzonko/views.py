@@ -14,3 +14,9 @@ class IndexView(View):
 class LocalPage(View):
     def get(self, request):
         return render(request, 'index.html')
+
+
+class Dashboard(View):
+
+    def get(self, request):
+        return render(request, 'dashboard.html')
