@@ -3,8 +3,7 @@ from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
 from jedzonko.models import Plan
-
-from jedzonko.forms import AddRecipeView
+from jedzonko.forms import AddRecipeForm
 
 
 class IndexView(View):
@@ -42,11 +41,11 @@ class RecipeList(View):
 
 class RecipeAdd(View):
     def get(self, request):
-        form = AddRecipeView()
+        form = AddRecipeForm()
         return render(request, 'app-add-recipe.html', context={'form': form})
 
     def post(self, request):
-        form = AddRecipeView(request.POST)
+        form = AddRecipeForm(request.POST)
         form.save()
         return render(request, 'app-add-recipe.html', context={'form': form, 'added': "Dodano nowy przepis"})
 
