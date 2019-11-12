@@ -2,7 +2,7 @@ from datetime import datetime
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
-from jedzonko.models import AddRecipeView
+from jedzonko.forms import AddRecipeView
 
 
 class IndexView(View):
@@ -44,7 +44,8 @@ class RecipeAdd(View):
     def post(self, request):
         form = AddRecipeView(request.POST)
         form.save()
-        return render(request, 'app-add-recipe.html', context={'added': "Dodano nowy przepis"})
+        return render(request, 'app-add-recipe.html', context={'form': form, 'added': "Dodano nowy przepis"})
+
 
 class RecipeModify(View):
 
