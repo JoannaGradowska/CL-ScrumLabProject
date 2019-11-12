@@ -17,7 +17,6 @@ from django.contrib import admin
 from django.urls import path
 from jedzonko import views
 
-
 urlpatterns = [
     path('', views.LandingPage.as_view()),
     path('admin/', admin.site.urls),
