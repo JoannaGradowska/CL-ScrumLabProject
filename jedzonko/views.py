@@ -2,6 +2,8 @@ from datetime import datetime
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
+from jedzonko.models import Plan
+
 from jedzonko.forms import AddRecipeView
 
 
@@ -12,10 +14,12 @@ class IndexView(View):
         return render(request, "test.html", ctx)
 
 
-class LocalPage(View):
+class LandingPage(View):
 
     def get(self, request):
-        return render(request, 'index.html')
+        return render(request, "index.html", {
+            'plans_counter': Plan.objects.all().count(),
+        })
 
 
 class Dashboard(View):

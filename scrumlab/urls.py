@@ -18,7 +18,7 @@ from django.urls import path
 from jedzonko import views
 
 urlpatterns = [
-    path('', views.LocalPage.as_view()),
+    path('', views.LandingPage.as_view()),
     path('admin/', admin.site.urls),
     path('index/', views.IndexView.as_view()),
     path('main/', views.Dashboard.as_view()),
