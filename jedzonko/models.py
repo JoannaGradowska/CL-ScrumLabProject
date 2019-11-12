@@ -1,4 +1,5 @@
 from django.db import models
+from django.forms import ModelForm
 
 
 class Recipe(models.Model):
@@ -29,3 +30,9 @@ class RecipePlan(models.Model):
     plan = models.ForeignKey(Plan, on_delete=models.CASCADE)
     order = models.SmallIntegerField()
     day_name = models.ForeignKey(DayName, on_delete=models.CASCADE)
+
+
+class AddRecipeView(ModelForm):
+    class Meta:
+        model = Recipe
+        fields = ['name', 'ingredients', 'description', 'preparation_time']
