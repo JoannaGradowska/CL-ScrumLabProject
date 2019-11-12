@@ -1,12 +1,11 @@
 from django.db import models
-from datetime import datetime
 
 
 class Recipe(models.Model):
     name = models.CharField(max_length=64)
     ingredients = models.TextField()
     description = models.TextField()
-    created = models.DateTimeField(datetime.now())
-    updated = models.DateTimeField(datetime.now())
+    created = models.DateTimeField(auto_now_add=True)
+    updated = models.DateTimeField(auto_now_add=True)
     preparation_time = models.SmallIntegerField()
     votes = models.SmallIntegerField(default=0)
