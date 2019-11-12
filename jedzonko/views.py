@@ -32,7 +32,7 @@ class RecipeDetails(View):
 class RecipeList(View):
 
     def get(self, request):
-        return HttpResponse('<a href="javascript:history.back()">back</a>')
+        return render(request, 'app-recipes.html')
 
 
 class RecipeAdd(View):
