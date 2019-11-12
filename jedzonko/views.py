@@ -61,6 +61,12 @@ class PlanDetails(View):
         return HttpResponse('<a href="javascript:history.back()">back</a>')
 
 
+class PlanList(View):
+
+    def get(self, request):
+        return HttpResponse('<a href="javascript:history.back()">back</a>')
+
+
 class PlanAdd(View):
 
     def get(self, request):
