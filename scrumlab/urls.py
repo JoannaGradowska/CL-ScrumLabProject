@@ -15,16 +15,19 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-from django.views.generic import TemplateView
 from jedzonko import views
 
 
-
 urlpatterns = [
+    path('', views.LocalPage.as_view()),
     path('admin/', admin.site.urls),
     path('index/', views.IndexView.as_view()),
-    path('', views.LocalPage.as_view()),
     path('main/', views.Dashboard.as_view()),
-    path('recipe/list/', views.TemplateView.as_view(template_name='app-recipes.html'))
-
+    path('recipe/<id>/', views.RecipeDetails.as_view()),
+    path('recipe/list/', views.RecipeList.as_view()),
+    path('recipe/add/', views.RecipeAdd.as_view()),
+    path('recipe/modify/<id>/', views.RecipeModify.as_view()),
+    path('plan/<id>/', views.PlanDetails.as_view()),
+    path('plan/add/', views.PlanAdd.as_view()),
+    path('plan/add-recipe/', views.PlanAddRecipe.as_view()),
 ]
