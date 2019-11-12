@@ -2,6 +2,7 @@ from datetime import datetime
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
+from jedzonko.models import Plan
 
 
 class IndexView(View):
@@ -14,7 +15,10 @@ class IndexView(View):
 class LocalPage(View):
 
     def get(self, request):
-        return render(request, 'index.html')
+        return render(request, "index.html", {
+            "actual_date": datetime.now(),
+            'plans_counter': Plan.objects.all().count(),
+        })
 
 
 class Dashboard(View):
