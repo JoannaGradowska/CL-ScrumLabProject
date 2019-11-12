@@ -15,8 +15,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path
-
 from jedzonko import views
+
 
 urlpatterns = [
     path('', views.LocalPage.as_view()),
