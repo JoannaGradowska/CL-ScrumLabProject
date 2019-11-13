@@ -46,7 +46,8 @@
 
                 </tbody>
             </table>
-            <ul class="pagination">
+        <div class="pagination">
+            <ul>
 
                 {% if plans.has_previous %}
                     <li><a href="/plan/list/{{ plans.previous_page_number }}"> < poprzednia </a></li>
@@ -58,9 +59,9 @@
 
                 {% for i in plans.paginator.page_range %}
                     {% if plans.number == i %}
-                        <li class="active"><span>|&nbsp;{{ i }}&nbsp; <span class="sr-only">(current)</span></span></li>
+                        <li class="active"><span>{{ i }}<span class="sr-only">(current)</span></span></li>
                     {% elif i > plans.number|add:'-10' and i < plans.number|add:'10' %}
-                        <li><a href="/plan/list/{{ i }}">|&nbsp;{{ i }}&nbsp;</a></li>
+                        <li><a href="/plan/list/{{ i }}">{{ i }}</a></li>
                     {% endif %}
                 {% endfor %}
 
@@ -73,7 +74,7 @@
                 {% endif %}
 
             </ul>
-
+</div>
         </div>
     </div>
 {% endblock content %}
