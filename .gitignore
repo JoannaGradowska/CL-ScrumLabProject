@@ -217,5 +217,4 @@ venv/*
 local_settings.py
 
 .DS_Store
-
 # End of https://www.gitignore.io/api/python,pycharm

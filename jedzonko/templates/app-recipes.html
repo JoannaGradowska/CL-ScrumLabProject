@@ -47,9 +47,8 @@
 <div class="pagination">
     <ul>
         {% if recipes.has_previous %}
-        <li><a href="/recipe/list/{{ recipes.previous_page_number }}">&laquo; poprzednia</a></li>
-        {% else %}
-        <li class="disabled"><span>&laquo; poprzednia</span></li>
+        <li><a href="/recipe/list/{{ recipes.previous_page_number }}"> < poprzednia</a></li>
+
         {% endif %}
         {% for i in recipes.paginator.page_range %}
             {% if recipes.number == i %}
@@ -59,9 +58,8 @@
             {% endif %}
         {% endfor %}
         {% if recipes.has_next %}
-        <li><a href="/recipe/list/{{ recipes.next_page_number }}">następna &raquo;</a></li>
-        {% else %}
-        <li class="disabled"><span>następna &raquo;</span></li>
+        <li><a href="/recipe/list/{{ recipes.next_page_number }}">następna ></a></li>
+
         {% endif %}
     </ul>
 </div>
