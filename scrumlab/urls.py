@@ -24,6 +24,7 @@ urlpatterns = [
     path('main/', views.Dashboard.as_view()),
     path('recipe/<int:id>/', views.RecipeDetails.as_view()),
     path('recipe/list/', views.RecipeList.as_view()),
+    path('recipe/list/<int:page>/', views.RecipeList.as_view()),
     path('recipe/add/', views.RecipeAdd.as_view()),
     path('recipe/modify/<int:id>/', views.RecipeModify.as_view()),
     path('plan/<int:id>/', views.PlanDetails.as_view()),
