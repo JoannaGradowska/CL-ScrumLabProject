@@ -438,6 +438,25 @@ margin: 0 auto !important;
   color: var(--link-color);
 }
 
+
+
+div.pagination ul {
+  margin: 0 auto;
+}
+div.pagination ul li {
+  border-right: 1px solid #999;
+  list-style: none;
+  float: left;
+}
+div.pagination ul li:last-child {
+  border: none;
+}
+div.pagination li a, div.pagination li span {
+  padding: 5px 15px;
+}
+
+
+
 /*------------------------------*/
 /*---- Schedule ----*/
 /*------------------------------*/
