@@ -50,6 +50,7 @@ class RecipeAdd(View):
     def post(self, request):
         form = AddRecipeForm(request.POST)
         form.save()
+        form = AddRecipeForm()
         return render(request, 'app-add-recipe.html', context={'form': form, 'added': "Dodano nowy przepis"})
 
 
