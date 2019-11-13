@@ -20,6 +20,8 @@ class LandingPage(View):
         return render(request, "index.html", {
             'plans_counter': Plan.objects.all().count(),
             'recipes_counter': Recipe.objects.all().count(),
+            'random_recipes': Recipe.objects.order_by('?')[:3],
+
         })
 
 
@@ -54,6 +56,7 @@ class RecipeAdd(View):
     def post(self, request):
         form = AddRecipeForm(request.POST)
         form.save()
+        form = AddRecipeForm()
         return render(request, 'app-add-recipe.html', context={'form': form, 'added': "Dodano nowy przepis"})
 
 
@@ -85,3 +88,4 @@ class PlanAddRecipe(View):
 
     def get(self, request):
         return HttpResponse('<a href="javascript:history.back()">back</a>')
+
