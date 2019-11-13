@@ -74,8 +74,13 @@ class PlanDetails(View):
 
 class PlanList(View):
 
-    def get(self, request):
-        return HttpResponse('<a href="javascript:history.back()">back</a>')
+    def get(self, request, page=1):
+        plans = Plan.objects.all().extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
+        paginator = Paginator(plans, 1) # na czas testow, docelowo 50
+        plans = paginator.get_page(page)
+        return render(request, 'app-schedules.html', {
+            'plans': plans,
+        })
 
 
 class PlanAdd(View):
