@@ -2,7 +2,7 @@ from datetime import datetime
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
-from jedzonko.models import Plan
+from jedzonko.models import Plan, Recipe
 from jedzonko.forms import AddRecipeForm
 
 
@@ -18,6 +18,7 @@ class LandingPage(View):
     def get(self, request):
         return render(request, "index.html", {
             'plans_counter': Plan.objects.all().count(),
+            'recipes_counter': Recipe.objects.all().count(),
         })
 
 
