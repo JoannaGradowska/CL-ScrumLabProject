@@ -4,7 +4,7 @@ from django.shortcuts import render
 from django.views import View
 from django.core.paginator import Paginator
 from jedzonko.models import Plan, Recipe
-from jedzonko.forms import AddRecipeForm
+from jedzonko.forms import AddRecipeForm, AddPlanForm
 
 
 class IndexView(View):
@@ -86,7 +86,23 @@ class PlanList(View):
 class PlanAdd(View):
 
     def get(self, request):
-        return HttpResponse('<a href="javascript:history.back()">back</a>')
+        form = AddPlanForm()
+        return render(request, 'app-add-schedules.html', context={
+            'form': form,
+        })
+
+    def post(self, request):
+        form = AddPlanForm(request.POST)
+        if form.is_valid():
+            form.save()
+            message = 'Dodano nowy plan'
+        else:
+            message = 'Ooops... nie zwalidowało?'
+        form = AddPlanForm()
+        return render(request, 'app-add-schedules.html', context={
+            'form': form,
+            'added': message,
+        })
 
 
 class PlanAddRecipe(View):
