@@ -19,6 +19,8 @@ class LandingPage(View):
         return render(request, "index.html", {
             'plans_counter': Plan.objects.all().count(),
             'recipes_counter': Recipe.objects.all().count(),
+            'random_recipes': Recipe.objects.order_by('?')[:3],
+
         })
 
 
@@ -79,3 +81,4 @@ class PlanAddRecipe(View):
 
     def get(self, request):
         return HttpResponse('<a href="javascript:history.back()">back</a>')
+
