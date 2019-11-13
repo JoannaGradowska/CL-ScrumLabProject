@@ -2,6 +2,7 @@ from datetime import datetime
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
+from django.core.paginator import Paginator
 from jedzonko.models import Plan, Recipe
 from jedzonko.forms import AddRecipeForm
 
@@ -38,8 +39,13 @@ class RecipeDetails(View):
 
 class RecipeList(View):
 
-    def get(self, request):
-        return render(request, 'app-recipes.html')
+    def get(self, request, page=1):
+        recipes = Recipe.objects.all().order_by('-votes', '-created')
+        paginator = Paginator(recipes, 5)
+        recipes = paginator.get_page(page)
+        return render(request, 'app-recipes.html', {
+            'recipes': recipes,
+        })
 
 
 class RecipeAdd(View):
