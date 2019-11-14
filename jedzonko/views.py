@@ -1,17 +1,9 @@
-from datetime import datetime
 from django.http import HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.views import View
 from django.core.paginator import Paginator
 from jedzonko.models import Plan, Recipe
 from jedzonko.forms import AddRecipeForm, AddPlanForm
-
-
-class IndexView(View):
-
-    def get(self, request):
-        ctx = {"actual_date": datetime.now()}
-        return render(request, "test.html", ctx)
 
 
 class LandingPage(View):
@@ -21,7 +13,6 @@ class LandingPage(View):
             'plans_counter': Plan.objects.all().count(),
             'recipes_counter': Recipe.objects.all().count(),
             'random_recipes': Recipe.objects.order_by('?')[:3],
-
         })
 
 
@@ -49,6 +40,7 @@ class RecipeList(View):
 
 
 class RecipeAdd(View):
+
     def get(self, request):
         form = AddRecipeForm()
         return render(request, 'app-add-recipe.html', context={'form': form})
@@ -76,7 +68,7 @@ class PlanList(View):
 
     def get(self, request, page=1):
         plans = Plan.objects.all().extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
-        paginator = Paginator(plans, 1) # na czas testow, docelowo 50
+        paginator = Paginator(plans, 2) # na czas testow, docelowo 50
         plans = paginator.get_page(page)
         return render(request, 'app-schedules.html', {
             'plans': plans,
@@ -94,15 +86,15 @@ class PlanAdd(View):
     def post(self, request):
         form = AddPlanForm(request.POST)
         if form.is_valid():
-            form.save()
-            message = 'Dodano nowy plan'
+            plan = Plan()
+            plan.name = form.cleaned_data['name']
+            plan.description = form.cleaned_data['description']
+            plan.save()
+            return redirect(f'/plan/{plan.id}/')
         else:
-            message = 'Ooops... nie zwalidowało?'
-        form = AddPlanForm()
-        return render(request, 'app-add-schedules.html', context={
-            'form': form,
-            'added': message,
-        })
+            return render(request, 'app-add-schedules.html', context={
+                'form': form,
+            })
 
 
 class PlanAddRecipe(View):

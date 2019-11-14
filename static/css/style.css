@@ -471,8 +471,15 @@ div.pagination li a, div.pagination li span {
 }
 .schedules-content .form-group.row {
   display: flex;
-  align-items: center;
+  align-items: flex-start;
+  align-self: flex-start;
 }
 .schedules-content-header {
   margin-bottom: 50px;
+}
+
+
+p.formerror {
+  font-size: 14px;
+  color: #e33;
 }
