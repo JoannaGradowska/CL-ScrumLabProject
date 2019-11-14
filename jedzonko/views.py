@@ -1,9 +1,11 @@
 from datetime import datetime
+
+from django.db import DatabaseError
 from django.http import HttpResponse
 from django.shortcuts import render
 from django.views import View
-from jedzonko.models import Plan, Recipe
-from jedzonko.forms import AddRecipeForm
+from jedzonko.models import *
+from jedzonko.forms import *
 
 
 class IndexView(View):
@@ -16,18 +18,25 @@ class IndexView(View):
 class LandingPage(View):
 
     def get(self, request):
+        plan = Plan.objects.last()
+        print(plan)
         return render(request, "index.html", {
             'plans_counter': Plan.objects.all().count(),
             'recipes_counter': Recipe.objects.all().count(),
             'random_recipes': Recipe.objects.order_by('?')[:3],
-
+            'last_plan': Plan.objects.last(),
         })
 
 
 class Dashboard(View):
 
     def get(self, request):
-        return render(request, 'dashboard.html')
+        return render(request, 'dashboard.html', {
+            'recipes_counter': Recipe.objects.all().count(),
+            'plans_counter': Plan.objects.all().count(),
+            'last_plan': Plan.objects.last(),
+            'day_name': DayName.objects.first(),
+        })
 
 
 class RecipeDetails(View):
@@ -79,7 +88,27 @@ class PlanAdd(View):
 
 
 class PlanAddRecipe(View):
-
     def get(self, request):
-        return HttpResponse('<a href="javascript:history.back()">back</a>')
+        return render(request, 'app-schedules-meal-recipe.html', {
+            'recipes': Recipe.objects.all(),
+            'plans': Plan.objects.all(),
+            'days': DayName.objects.all(),
+
+        })
+    def post(self, request):
+        try:
+            plan = RecipePlan()
+            plan.plan_id = int(request.POST.get('plan_id'))
+            plan.meal_name = request.POST.get('meal_name')
+            plan.order = int(request.POST.get('order'))
+            plan.recipe_id = int(request.POST.get('recipe_id'))
+            plan.day_name_id = int(request.POST.get('day_id'))
+            plan.save()
+            save = True
+        except DatabaseError as e:
+            print(e)
+            saved = False
+        return render(request, 'app-schedules-meal-recipe.html', context={'added': 'dodano przepis do planu'})
+
+
 
