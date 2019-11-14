@@ -1,11 +1,11 @@
 from django.db import DatabaseError
 from django.http import HttpResponse
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.core.paginator import Paginator
 from jedzonko.models import Plan, Recipe, RecipePlan, DayName
 from jedzonko.forms import AddRecipeForm, AddPlanForm
-
+import pprint
 
 class LandingPage(View):
 
@@ -27,9 +27,20 @@ class Dashboard(View):
 
 
 class RecipeDetails(View):
+
     def get(self, request, id=None):
-        recipes = Recipe.objects.get(id=id)
-        return render(request, 'app-recipe-details.html', context={'id': id, 'recipes': recipes})
+        recipe = Recipe.objects.get(id=id)
+        return render(request, 'app-recipe-details.html', context={
+            'recipe': recipe,
+        })
+
+    def post(self, request, id):
+        if request.POST.get('recipe_id') is not None:
+            recipe = get_object_or_404(Recipe, pk=int(request.POST.get('recipe_id')))
+            recipe.votes += 1
+            recipe.save()
+            return redirect(f"/recipe/{request.POST.get('recipe_id')}/")
+        return redirect(request.META['PATH_INFO'])
 
 
 class RecipeList(View):

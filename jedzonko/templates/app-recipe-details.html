@@ -1,5 +1,5 @@
 {% extends "__base__.html" %}
-{% block title %}{% endblock %}
+{% block title %}{{ recipe.name }}{% endblock %}
 {% block content %}
 <div class="dashboard-content border-dashed p-3 m-4 view-height">
 
@@ -7,9 +7,8 @@
         <div class="row border-bottom border-3">
             <div class="col"><h3 class="color-header text-uppercase">Szczegóły
                 przepisu</h3></div>
-            <div class="col d-flex justify-content-end mb-2"><a
-                    href="/app-recipes.html"
-                    class="btn btn-color rounded-0 pt-0 pb-0 pr-4 pl-4">Powrót</a>
+            <div class="col d-flex justify-content-end mb-2">
+                <a href="/recipe/list/" class="btn btn-color rounded-0 pt-0 pb-0 pr-4 pl-4">Powrót</a>
             </div>
         </div>
 
@@ -18,24 +17,29 @@
             <tr class="d-flex">
                 <th scope="row" class="col-2">Nazwa Przepisu</th>
                 <td class="col-7">
-                    {{ recipes.name }}
+                    {{ recipe.name }}
                 </td>
             </tr>
             <tr class="d-flex">
                 <th scope="row" class="col-2">Opis przepisu</th>
-                <td class="col-7">{{ recipes.preparation }}
+                <td class="col-7">{{ recipe.preparation }}
                 </td>
             </tr>
             <tr class="d-flex">
                 <th scope="row" class="col-2">Przygotowanie (minuty)</th>
                 <td class="col-7">
-                    {{ recipes.preparation_time }}
+                    {{ recipe.preparation_time }}
                 </td>
             </tr>
              <tr class="d-flex">
                 <th scope="row" class="col-2">Liczba polubień</th>
                 <td class="col-7">
-                    {{ recipes.votes }}
+                    {{ recipe.votes }}
+                    <form action="" method="post" class="dispinl">
+                        <input type="hidden" name="recipe_id" value="{{ recipe.id }}">
+                        <input type="submit" value="głosuj" class="btn btn-primary btn-sm">
+                        {% csrf_token %}
+                    </form>
                 </td>
             </tr>
             </tbody>
@@ -50,11 +54,11 @@
         </div>
         <div class="row d-flex">
             <div class="col-5 p-4">
-                <p>{{ recipes.description }}</p>
+                <p>{{ recipe.description }}</p>
             </div>
             <div class="col-2"></div>
             <ul class="col-5 p-4 list-unstyled">
-                {{ recipes.ingredients }}
+                {{ recipe.ingredients }}
             </ul>
         </div>
 

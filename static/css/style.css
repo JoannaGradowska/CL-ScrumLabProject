@@ -483,3 +483,9 @@ p.formerror {
   font-size: 14px;
   color: #e33;
 }
+
+
+form.dispinl {
+  display: inline;
+  margin: 0 10px;
+}
