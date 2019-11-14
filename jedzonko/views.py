@@ -23,9 +23,9 @@ class Dashboard(View):
 
 
 class RecipeDetails(View):
-
     def get(self, request, id=None):
-        return HttpResponse('<a href="javascript:history.back()">back</a>')
+        recipes = Recipe.objects.get(id=id)
+        return render(request, 'app-recipe-details.html', context={'id': id, 'recipes': recipes})
 
 
 class RecipeList(View):
@@ -68,7 +68,7 @@ class PlanList(View):
 
     def get(self, request, page=1):
         plans = Plan.objects.all().extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
-        paginator = Paginator(plans, 2) # na czas testow, docelowo 50
+        paginator = Paginator(plans, 2)  # na czas testow, docelowo 50
         plans = paginator.get_page(page)
         return render(request, 'app-schedules.html', {
             'plans': plans,
@@ -101,4 +101,3 @@ class PlanAddRecipe(View):
 
     def get(self, request):
         return HttpResponse('<a href="javascript:history.back()">back</a>')
-
