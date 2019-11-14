@@ -30,5 +30,5 @@ urlpatterns = [
     path('plan/list/', views.PlanList.as_view()),
     path('plan/list/<int:page>/', views.PlanList.as_view()),
     path('plan/add/', views.PlanAdd.as_view()),
-    path('plan/add-recipe/', views.PlanAddRecipe.as_view()),
+    path('plan/add-recipe/', views.PlanAddRecipe.as_view(), name='process'),
 ]
