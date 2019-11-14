@@ -20,14 +20,15 @@ from jedzonko import views
 urlpatterns = [
     path('', views.LandingPage.as_view()),
     path('admin/', admin.site.urls),
-    path('index/', views.IndexView.as_view()),
     path('main/', views.Dashboard.as_view()),
     path('recipe/<int:id>/', views.RecipeDetails.as_view()),
     path('recipe/list/', views.RecipeList.as_view()),
+    path('recipe/list/<int:page>/', views.RecipeList.as_view()),
     path('recipe/add/', views.RecipeAdd.as_view()),
     path('recipe/modify/<int:id>/', views.RecipeModify.as_view()),
     path('plan/<int:id>/', views.PlanDetails.as_view()),
     path('plan/list/', views.PlanList.as_view()),
+    path('plan/list/<int:page>/', views.PlanList.as_view()),
     path('plan/add/', views.PlanAdd.as_view()),
     path('plan/add-recipe/', views.PlanAddRecipe.as_view()),
 ]
