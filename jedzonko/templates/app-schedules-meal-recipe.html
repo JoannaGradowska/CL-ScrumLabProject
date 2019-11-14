@@ -1,22 +1,19 @@
 {% extends "__base__.html" %}
-{% block title %}{% endblock %}
+{% block title %}Dodawanie przepisu do planu{% endblock %}
 {% block content %}
     <div class="dashboard-content border-dashed p-3 m-4 view-height" xmlns="http://www.w3.org/1999/html">
         <div class="row border-bottom border-3 p-1 m-1">
             <div class="col noPadding">
                 <h3 class="color-header text-uppercase">DODAJ PRZEPIS DO PLANU</h3>
             </div>
-            <div class="col d-flex justify-content-end mb-2 noPadding">
-                <a href="/plan/add-recipe">Zapisz</a>
-            </div>
+{#            <div class="col d-flex justify-content-end mb-2 noPadding">#}
+{#                <a href="/plan/add-recipe">Zapisz</a>#}
+{#            </div>#}
         </div>
         <div class="schedules-content">
             <form method="post" action="{% url 'process' %}">
                 <div class="form-group row">
-                    <label for="choosePlan"
-                           class="col-sm-2 label-size col-form-label">
-                        Wybierz plan
-                    </label>
+                    <label for="choosePlan" class="col-sm-2 label-size col-form-label">Wybierz plan</label>
                     <div class="col-sm-3">
                         <select class="form-control" name="plan_id" id="choosePlan">
                             {% for plan in plans %}
@@ -26,27 +23,19 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="name" class="col-sm-2 label-size col-form-label">
-                        Nazwa posiłku
-                    </label>
+                    <label for="name" class="col-sm-2 label-size col-form-label">Nazwa posiłku</label>
                     <div class="col-sm-10">
-                        <input type="text" class="form-control" name="meal_name" value="" id="name"
-                               placeholder="Nazwa posiłku">
+                        <input type="text" class="form-control" name="meal_name" value="" id="name" placeholder="Nazwa posiłku">
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="number" class="col-sm-2 label-size col-form-label">
-                        Numer posiłku
-                    </label>
+                    <label for="number" class="col-sm-2 label-size col-form-label">Numer posiłku</label>
                     <div class="col-sm-2">
-                        <input type="numeric" class="form-control" name="order" value="" id="number"
-                               placeholder="Numer posiłku">
+                        <input type="number" class="form-control" name="order" value="" id="number" placeholder="Numer posiłku">
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="recipie" class="col-sm-2 label-size col-form-label">
-                        Przepis
-                    </label>
+                    <label for="recipie" class="col-sm-2 label-size col-form-label">Przepis</label>
                     <div class="col-sm-4">
                         <select class="form-control" name="recipe_id" id="recipie">
                             {% for recipe in recipes %}
@@ -56,9 +45,7 @@
                     </div>
                 </div>
                 <div class="form-group row">
-                    <label for="day" class="col-sm-2 label-size col-form-label">
-                        Dzień
-                    </label>
+                    <label for="day" class="col-sm-2 label-size col-form-label">Dzień</label>
                     <div class="col-sm-2">
                         <select class="form-control" name="day_id" id="day">
                             {% for day in days %}

@@ -118,13 +118,14 @@ class PlanAdd(View):
 
 
 class PlanAddRecipe(View):
+
     def get(self, request):
         return render(request, 'app-schedules-meal-recipe.html', {
             'recipes': Recipe.objects.all(),
             'plans': Plan.objects.all(),
             'days': DayName.objects.all(),
-
         })
+
     def post(self, request):
         try:
             plan = RecipePlan()
@@ -134,10 +135,7 @@ class PlanAddRecipe(View):
             plan.recipe_id = int(request.POST.get('recipe_id'))
             plan.day_name_id = int(request.POST.get('day_id'))
             plan.save()
-            save = True
+            return redirect(f"/plan/{request.POST.get('plan_id')}/")
         except DatabaseError as e:
             print(e)
-            saved = False
-        return render(request, 'app-schedules-meal-recipe.html', context={'added': 'dodano przepis do planu'})
-
-
+            self.get(request)
