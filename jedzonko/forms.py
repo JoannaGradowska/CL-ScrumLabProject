@@ -6,7 +6,7 @@ from jedzonko.models import Recipe, Plan
 class AddRecipeForm(forms.ModelForm):
     class Meta:
         model = Recipe
-        fields = ['name', 'ingredients', 'description', 'preparation_time']
+        fields = ['name', 'ingredients', 'description', 'preparation_time', 'preparation']
 
 
 class AddPlanForm(forms.Form):
