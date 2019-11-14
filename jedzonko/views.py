@@ -5,7 +5,7 @@ from django.views import View
 from django.core.paginator import Paginator
 from jedzonko.models import Plan, Recipe, RecipePlan, DayName
 from jedzonko.forms import AddRecipeForm, AddPlanForm
-import pprint
+
 
 class LandingPage(View):
 
@@ -37,7 +37,10 @@ class RecipeDetails(View):
     def post(self, request, id):
         if request.POST.get('recipe_id') is not None:
             recipe = get_object_or_404(Recipe, pk=int(request.POST.get('recipe_id')))
-            recipe.votes += 1
+            if request.POST.get('add') is not None:
+                recipe.votes += 1
+            elif recipe.votes > 0:
+                recipe.votes -= 1
             recipe.save()
             return redirect(f"/recipe/{request.POST.get('recipe_id')}/")
         return redirect(request.META['PATH_INFO'])
