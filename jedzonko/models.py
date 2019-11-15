@@ -11,6 +11,9 @@ class Recipe(models.Model):
     preparation = models.TextField()
     votes = models.SmallIntegerField(default=0)
 
+    def __str__(self):
+        return self.name
+
 
 class Plan(models.Model):
     name = models.CharField(max_length=255)
@@ -18,10 +21,16 @@ class Plan(models.Model):
     created = models.DateTimeField(auto_now_add=True)
     recipes = models.ManyToManyField(Recipe, through='RecipePlan')
 
+    def __str__(self):
+        return self.name
+
 
 class DayName(models.Model):
     day_name = models.CharField(max_length=16)
     order = models.SmallIntegerField()
+
+    def __str__(self):
+        return self.day_name
 
 
 class RecipePlan(models.Model):
@@ -32,42 +41,56 @@ class RecipePlan(models.Model):
     day_name = models.ForeignKey(DayName, on_delete=models.CASCADE)
 
     @staticmethod
-    def get_data(plan_id):
-        # recipeplan dict structure
-        # recipeplan = {
-        #     'name': 'nazwa planu',
-        #     'description': 'opis planu',
-        #     'days': {
-        #         1: {
-        #             'day_name': 'nazwa dnia,'
-        #             'meals': {
-        #                 1: {
-        #                     'meal_name': 'nazwa posilku',
-        #                     'recipe_id': id_przepisu,
-        #                     'recipe_name': 'nazwa przepisu',
-        #                 }
-        #             }
-        #         }
-        #     }
-        # }
-        recipeplan = {'days': {}}
-        plan = RecipePlan.objects.filter(plan_id=plan_id)
-        for rp in plan:
-            recipeplan['name'] = rp.plan.name
-            recipeplan['description'] = rp.plan.description
-            if rp.day_name_id not in recipeplan['days']:
-                recipeplan['days'].update({
-                    rp.day_name_id: {
-                        'day_name': rp.day_name.day_name,
-                        'meals': {},
-                    },
+    def get_recipe_plan_data(plan_id):
+        """ structure of recipe_plan_data
+        recipe_plan_data = {
+            'name': 'plan name',
+            'description': 'plan description',
+            'days': [
+                {
+                    'name': 'day name',
+                    'meals': [
+                        {
+                            'name': 'meal name',
+                            'recipe_id': recipe_id,
+                            'recipe_name': 'recipe name',
+                        },
+                        {
+                            ...
+                        }
+                    ]
+                },
+                {
+                    ...
+                },
+            ]
+        }
+        """
+        recipe_plan = RecipePlan.objects.filter(plan_id=plan_id).order_by('day_name__order', 'order')
+        if len(recipe_plan):
+            recipe_plan_data = {
+                'name': recipe_plan[0].plan.name,
+                'description': recipe_plan[0].plan.description,
+                'days': [],
+            }
+            meals = []
+            for i in range(len(recipe_plan)):
+                meals.append({
+                    'name': recipe_plan[i].meal_name,
+                    'recipe_id': recipe_plan[i].recipe.id,
+                    'recipe_name': recipe_plan[i].recipe.name,
                 })
-            if rp.id not in recipeplan['days'][rp.day_name_id]['meals']:
-                recipeplan['days'][rp.day_name_id]['meals'].update({
-                    rp.id: {
-                        'meal_name': rp.meal_name,
-                        'recipe_id': rp.recipe.id,
-                        'recipe_name': rp.recipe.name,
-                    },
-                })
-        return recipeplan
+                if i + 1 == len(recipe_plan) or recipe_plan[i + 1].day_name_id != recipe_plan[i].day_name_id:
+                    recipe_plan_data['days'].append({
+                        'name': recipe_plan[i].day_name.day_name,
+                        'meals': meals,
+                    })
+                    meals = []
+        else:
+            plan = Plan.objects.get(pk=plan_id)
+            recipe_plan_data = {
+                'name': plan.name,
+                'description': plan.description,
+                'days': [],
+            }
+        return recipe_plan_data
