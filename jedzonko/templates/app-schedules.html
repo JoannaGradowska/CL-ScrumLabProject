@@ -3,7 +3,7 @@
 {% block content %}
     <div class="dashboard-content border-dashed p-3 m-4 view-height">
 
-        <div class="row border-bottom border-3 p-1 m-1">
+            <div class="row border-bottom border-3 p-1 m-1">
             <div class="col noPadding">
                 <h3 class="color-header text-uppercase">LISTA PLANÓW</h3>
             </div>
@@ -17,16 +17,16 @@
         <div class="schedules-content">
             <table class="table border-bottom">
                 <thead>
-                <tr>
+                <tr class="d-flex text-color-darker">
                     <th class="col-1">ID</th>
                     <th class="col-2">NAZWA</th>
                     <th class="col-7">OPIS</th>
-                    <th class="col-2">AKCJE</th>
+                    <th class="col-2 center">AKCJE</th>
                 </tr>
                 </thead>
                 <tbody class="text-color-lighter">
                 {% for plan in plans %}
-                    <tr>
+                    <tr class="d-flex">
                         <th scope="row" class="col-1">
                             {{ plan.id }}
                         </th>
