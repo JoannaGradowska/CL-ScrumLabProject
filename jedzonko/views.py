@@ -1,9 +1,8 @@
-from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.core.paginator import Paginator
-from jedzonko.models import Plan, Recipe, RecipePlan, DayName
-from jedzonko.forms import AddRecipeForm, AddPlanForm, PlanAddRecipeForm
+from jedzonko.models import Plan, Recipe, RecipePlan
+from jedzonko.forms import AddRecipeForm, AddPlanForm, PlanAddRecipeForm, ModifyRecipeForm
 
 
 class LandingPage(View):
@@ -74,7 +73,21 @@ class RecipeAdd(View):
 class RecipeModify(View):
 
     def get(self, request, id=None):
-        return HttpResponse('<a href="javascript:history.back()">back</a>')
+        recipe = get_object_or_404(Recipe, pk=id)
+        form = ModifyRecipeForm(instance=recipe)
+        return render(request, 'app-edit-recipe.html', context={
+            'form': form,
+            'recipe_id': recipe.id,
+        })
+
+    def post(self, request, id=None):
+        # ponizszej linii uzyjemy, jak bedziemy chcieli edytowac ten sam przepis
+        # form = ModifyRecipeForm(request.POST, instance=Recipe.objects.get(pk=id))
+        form = ModifyRecipeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/recipe/list/')
+        return redirect(f"/recipe/modify/{request.POST.get('recipe_id')}/?error")
 
 
 class PlanDetails(View):
