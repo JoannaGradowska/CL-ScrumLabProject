@@ -1,6 +1,5 @@
 from django import forms
-# from django.forms import ModelForm
-from jedzonko.models import Recipe, Plan
+from jedzonko.models import Recipe, Plan, DayName
 
 
 class AddRecipeForm(forms.ModelForm):
@@ -25,4 +24,44 @@ class AddPlanForm(forms.Form):
         widget=forms.Textarea(
             attrs={'class': 'form-control', 'placeholder': 'opis planu'}
         )
+    )
+
+
+class PlanAddRecipeForm(forms.Form):
+    plan_id = forms.ModelChoiceField(
+        queryset=Plan.objects.all().order_by('name'),
+        label='Wybierz plan',
+        widget=forms.Select(
+            attrs={'class': 'custom-select mb-3 autowidth'},
+        ),
+    )
+    meal_name = forms.CharField(
+        min_length=3,
+        max_length=84,
+        strip=True,
+        label='Nazwa posiłku',
+        widget=forms.TextInput(
+            attrs={'class': 'form-control', 'placeholder': 'nazwa posiłku'},
+        ),
+    )
+    order = forms.IntegerField(
+        min_value=1,
+        label='Numer posiłku',
+        widget=forms.NumberInput(
+            attrs={'class': 'form-control', 'placeholder': 'pozycja na liście'},
+        ),
+    )
+    recipe_id = forms.ModelChoiceField(
+        queryset=Recipe.objects.all().order_by('name'),
+        label='Przepis',
+        widget=forms.Select(
+            attrs={'class': 'form-control'},
+        ),
+    )
+    day_name_id = forms.ModelChoiceField(
+        queryset=DayName.objects.all().order_by('order'),
+        label='Dzień',
+        widget=forms.Select(
+            attrs={'class': 'form-control'},
+        ),
     )

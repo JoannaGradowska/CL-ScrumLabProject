@@ -1,10 +1,9 @@
-from django.db import DatabaseError
 from django.http import HttpResponse
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.core.paginator import Paginator
 from jedzonko.models import Plan, Recipe, RecipePlan, DayName
-from jedzonko.forms import AddRecipeForm, AddPlanForm
+from jedzonko.forms import AddRecipeForm, AddPlanForm, PlanAddRecipeForm
 
 
 class LandingPage(View):
@@ -22,7 +21,9 @@ class Dashboard(View):
     def get(self, request):
         plan = RecipePlan.objects.order_by('-plan_id')[0]
         return render(request, 'dashboard.html', context={
-            'plan': RecipePlan.get_data(plan.plan_id)
+            'recipes_counter': Recipe.objects.count(),
+            'plans_counter': Plan.objects.count(),
+            'plan': RecipePlan.get_recipe_plan_data(plan.plan_id),
         })
 
 
@@ -80,7 +81,7 @@ class PlanDetails(View):
 
     def get(self, request, id=None):
         return render(request, 'app-details-schedules.html', context={
-            'plan': RecipePlan.get_data(id)
+            'plan': RecipePlan.get_recipe_plan_data(id)
         })
 
 
@@ -118,26 +119,24 @@ class PlanAdd(View):
 
 
 class PlanAddRecipe(View):
+
     def get(self, request):
         return render(request, 'app-schedules-meal-recipe.html', {
-            'recipes': Recipe.objects.all(),
-            'plans': Plan.objects.all(),
-            'days': DayName.objects.all(),
-
+            'form': PlanAddRecipeForm(),
         })
+
     def post(self, request):
-        try:
+        form = PlanAddRecipeForm(request.POST)
+        if form.is_valid():
             plan = RecipePlan()
-            plan.plan_id = int(request.POST.get('plan_id'))
-            plan.meal_name = request.POST.get('meal_name')
-            plan.order = int(request.POST.get('order'))
-            plan.recipe_id = int(request.POST.get('recipe_id'))
-            plan.day_name_id = int(request.POST.get('day_id'))
+            plan.meal_name = form.cleaned_data['meal_name']
+            plan.order = form.cleaned_data['order']
+            plan.day_name = form.cleaned_data['day_name_id']
+            plan.plan = form.cleaned_data['plan_id']
+            plan.recipe = form.cleaned_data['recipe_id']
             plan.save()
-            save = True
-        except DatabaseError as e:
-            print(e)
-            saved = False
-        return render(request, 'app-schedules-meal-recipe.html', context={'added': 'dodano przepis do planu'})
-
-
+            return redirect(f"/plan/{plan.plan_id}/")
+        else:
+            return render(request, 'app-schedules-meal-recipe.html', {
+                'form': form,
+            })
