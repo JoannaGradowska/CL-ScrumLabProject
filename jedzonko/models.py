@@ -1,4 +1,5 @@
 from django.db import models
+from django.utils.text import slugify
 
 
 class Recipe(models.Model):
@@ -94,3 +95,13 @@ class RecipePlan(models.Model):
                 'days': [],
             }
         return recipe_plan_data
+
+
+class Page(models.Model):
+    title = models.CharField(max_length=100)
+    description = models.TextField()
+    slug = models.SlugField(max_length=100, unique=True)
+
+    def save(self, *args, **kwargs):
+        self.slug = slugify(self.title)
+        super().save(*args, **kwargs)
