@@ -1,7 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.core.paginator import Paginator
-from jedzonko.models import Plan, Recipe, RecipePlan
+from jedzonko.models import Plan, Recipe, RecipePlan, Page
 from jedzonko.forms import AddRecipeForm, AddPlanForm, PlanAddRecipeForm, ModifyRecipeForm
 
 
@@ -153,3 +153,11 @@ class PlanAddRecipe(View):
             return render(request, 'app-schedules-meal-recipe.html', {
                 'form': form,
             })
+
+
+class ViewPage(View):
+
+    def get(self, request, slug):
+        return render(request, 'page-base.html', context={
+            'page': get_object_or_404(Page, slug=slug)
+        })
