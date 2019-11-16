@@ -16,7 +16,8 @@ def in_slugs(slug):
 @register.simple_tag(takes_context=True)
 def activeclass(context, slug):
     request = context['request']
-    if slug == request.META['PATH_INFO'].strip(' /'):
+    path = request.META['PATH_INFO'].strip(' /')
+    if slug == path[:len(slug)]:
         return ' active'
     else:
         return ''
