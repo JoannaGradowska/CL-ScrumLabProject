@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.core.paginator import Paginator
 from jedzonko.models import Plan, Recipe, RecipePlan, Page
-from jedzonko.forms import AddRecipeForm, AddPlanForm, PlanAddRecipeForm, ModifyRecipeForm
+from jedzonko.forms import AddModifyRecipeForm, AddPlanForm, PlanAddRecipeForm
 
 
 class LandingPage(View):
@@ -28,7 +28,7 @@ class Dashboard(View):
 
 class RecipeDetails(View):
 
-    def get(self, request, id=None):
+    def get(self, request, id):
         recipe = Recipe.objects.get(id=id)
         return render(request, 'app-recipe-details.html', context={
             'recipe': recipe,
@@ -60,21 +60,25 @@ class RecipeList(View):
 class RecipeAdd(View):
 
     def get(self, request):
-        form = AddRecipeForm()
+        form = AddModifyRecipeForm()
         return render(request, 'app-add-recipe.html', context={'form': form})
 
     def post(self, request):
-        form = AddRecipeForm(request.POST)
-        form.save()
-        form = AddRecipeForm()
-        return render(request, 'app-add-recipe.html', context={'form': form, 'added': "Dodano nowy przepis"})
+        form = AddModifyRecipeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('/recipe/list/')
+        return render(request, 'app-add-recipe.html', context={
+            'form': form,
+            'error_message': "Wypełnij poprawnie wszystkie pola",
+        })
 
 
 class RecipeModify(View):
 
     def get(self, request, id=None):
         recipe = get_object_or_404(Recipe, pk=id)
-        form = ModifyRecipeForm(instance=recipe)
+        form = AddModifyRecipeForm(instance=recipe)
         return render(request, 'app-edit-recipe.html', context={
             'form': form,
             'recipe_id': recipe.id,
@@ -83,7 +87,7 @@ class RecipeModify(View):
     def post(self, request, id=None):
         # ponizszej linii uzyjemy, jak bedziemy chcieli edytowac ten sam przepis
         # form = ModifyRecipeForm(request.POST, instance=Recipe.objects.get(pk=id))
-        form = ModifyRecipeForm(request.POST)
+        form = AddModifyRecipeForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('/recipe/list/')

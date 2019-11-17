@@ -2,10 +2,24 @@ from django import forms
 from jedzonko.models import Recipe, Plan, DayName
 
 
-class AddRecipeForm(forms.ModelForm):
+class AddModifyRecipeForm(forms.ModelForm):
     class Meta:
         model = Recipe
         fields = ['name', 'ingredients', 'description', 'preparation_time', 'preparation']
+        labels = {
+            'name': 'Nazwa przepisu',
+            'ingredients': 'Składniki',
+            'description': 'Opis przepisu',
+            'preparation_time': 'Przygotowanie (minuty)',
+            'preparation': 'Sposób przygotowania',
+        }
+        widgets = {
+            'name': forms.TextInput(attrs={'class': 'w-100 p-1'}),
+            'description': forms.Textarea(attrs={'class': 'w-100 p-1', 'rows': 5}),
+            'preparation_time': forms.NumberInput(attrs={'class': 'p-1'}),
+            'preparation': forms.Textarea(attrs={'class': 'w-100 p-1', 'rows': 10}),
+            'ingredients': forms.Textarea(attrs={'class': 'w-100 p-1', 'rows': 10}),
+        }
 
 
 class AddPlanForm(forms.Form):
@@ -65,24 +79,3 @@ class PlanAddRecipeForm(forms.Form):
             attrs={'class': 'form-control'},
         ),
     )
-
-
-class ModifyRecipeForm(forms.ModelForm):
-
-    class Meta:
-        model = Recipe
-        fields = ['name', 'ingredients', 'description', 'preparation_time', 'preparation']
-        labels = {
-            'name': 'Nazwa przepisu',
-            'ingredients': 'Składniki',
-            'description': 'Opis przepisu',
-            'preparation_time': 'Przygotowanie (minuty)',
-            'preparation': 'Sposób przygotowania',
-        }
-        widgets = {
-            'name': forms.TextInput(attrs={'class': 'w-100 p-1 inowa'}),
-            'description': forms.Textarea(attrs={'class': 'w-100 p-1', 'rows': 5}),
-            'preparation_time': forms.NumberInput(attrs={'class': 'p-1'}),
-            'preparation': forms.Textarea(attrs={'class': 'w-100 p-1', 'rows': 10}),
-            'ingredients': forms.Textarea(attrs={'class': 'w-100 p-1', 'rows': 10}),
-        }
