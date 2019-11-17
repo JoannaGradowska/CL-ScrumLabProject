@@ -29,9 +29,13 @@ class Dashboard(View):
 class RecipeDetails(View):
 
     def get(self, request, id):
-        recipe = Recipe.objects.get(id=id)
+        if request.GET.get('ref') == 'plan':
+            back_link = '/plan/' + request.GET.get('id')
+        else:
+            back_link = f"/recipe/list/{1 if request.GET.get('ref') is None else request.GET.get('ref')}/"
         return render(request, 'app-recipe-details.html', context={
-            'recipe': recipe,
+            'recipe': Recipe.objects.get(id=id),
+            'back_link': back_link,
         })
 
     def post(self, request, id):
@@ -42,7 +46,8 @@ class RecipeDetails(View):
             elif recipe.votes > 0:
                 recipe.votes -= 1
             recipe.save()
-            return redirect(f"/recipe/{request.POST.get('recipe_id')}/")
+            ref = 1 if request.GET.get('ref') is None else request.GET.get('ref')
+            return redirect(f"/recipe/{request.POST.get('recipe_id')}/?ref={ref}")
         return redirect(request.META['PATH_INFO'])
 
 
@@ -98,7 +103,8 @@ class PlanDetails(View):
 
     def get(self, request, id=None):
         return render(request, 'app-details-schedules.html', context={
-            'plan': RecipePlan.get_recipe_plan_data(id)
+            'plan': RecipePlan.get_recipe_plan_data(id),
+            'ref': 1 if request.GET.get('ref') is None else request.GET.get('ref'),
         })
 
 
@@ -157,6 +163,21 @@ class PlanAddRecipe(View):
             return render(request, 'app-schedules-meal-recipe.html', {
                 'form': form,
             })
+
+
+class PlanDeleteMeal(View):
+
+    def get(self, request, meal_id):
+        return render(request, 'app-plan-delete-meal.html', context={
+            'meal': get_object_or_404(RecipePlan, pk=meal_id),
+        })
+
+    def post(self, request, meal_id):
+        if meal_id == int(request.POST.get('meal_id')):
+            meal = get_object_or_404(RecipePlan, pk=meal_id)
+            meal.delete()
+            return redirect(f'/plan/{meal.plan_id}/')
+        return self.get(request, meal_id)
 
 
 class ViewPage(View):

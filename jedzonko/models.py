@@ -45,6 +45,7 @@ class RecipePlan(models.Model):
     def get_recipe_plan_data(plan_id):
         """ structure of recipe_plan_data
         recipe_plan_data = {
+            'id': plan_id,
             'name': 'plan name',
             'description': 'plan description',
             'days': [
@@ -70,6 +71,7 @@ class RecipePlan(models.Model):
         recipe_plan = RecipePlan.objects.filter(plan_id=plan_id).order_by('day_name__order', 'order')
         if len(recipe_plan):
             recipe_plan_data = {
+                'id': recipe_plan[0].plan.id,
                 'name': recipe_plan[0].plan.name,
                 'description': recipe_plan[0].plan.description,
                 'days': [],
@@ -77,6 +79,7 @@ class RecipePlan(models.Model):
             meals = []
             for i in range(len(recipe_plan)):
                 meals.append({
+                    'id': recipe_plan[i].id,
                     'name': recipe_plan[i].meal_name,
                     'recipe_id': recipe_plan[i].recipe.id,
                     'recipe_name': recipe_plan[i].recipe.name,
@@ -90,6 +93,7 @@ class RecipePlan(models.Model):
         else:
             plan = Plan.objects.get(pk=plan_id)
             recipe_plan_data = {
+                'id': plan.id,
                 'name': plan.name,
                 'description': plan.description,
                 'days': [],
