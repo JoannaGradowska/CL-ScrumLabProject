@@ -3,6 +3,7 @@ from django.views import View
 from django.core.paginator import Paginator
 from jedzonko.models import Plan, Recipe, RecipePlan, Page
 from jedzonko.forms import AddModifyRecipeForm, AddPlanForm, PlanAddRecipeForm
+from .settings import *
 
 
 class LandingPage(View):
@@ -29,13 +30,9 @@ class Dashboard(View):
 class RecipeDetails(View):
 
     def get(self, request, id):
-        if request.GET.get('ref') == 'plan':
-            back_link = '/plan/' + request.GET.get('id')
-        else:
-            back_link = f"/recipe/list/{1 if request.GET.get('ref') is None else request.GET.get('ref')}/"
         return render(request, 'app-recipe-details.html', context={
             'recipe': Recipe.objects.get(id=id),
-            'back_link': back_link,
+            'back_link': '/recipe/list/' if request.GET.get('ref') is None else request.GET.get('ref'),
         })
 
     def post(self, request, id):
@@ -46,7 +43,7 @@ class RecipeDetails(View):
             elif recipe.votes > 0:
                 recipe.votes -= 1
             recipe.save()
-            ref = 1 if request.GET.get('ref') is None else request.GET.get('ref')
+            ref = f'/recipe/list/1/' if request.GET.get('ref') is None else request.GET.get('ref')
             return redirect(f"/recipe/{request.POST.get('recipe_id')}/?ref={ref}")
         return redirect(request.META['PATH_INFO'])
 
@@ -55,7 +52,7 @@ class RecipeList(View):
 
     def get(self, request, page=1):
         recipes = Recipe.objects.all().order_by('-votes', '-created')
-        paginator = Paginator(recipes, 5)
+        paginator = Paginator(recipes, PAGIN_RECIPES_PER_PAGE)
         recipes = paginator.get_page(page)
         return render(request, 'app-recipes.html', {
             'recipes': recipes,
@@ -104,7 +101,7 @@ class PlanDetails(View):
     def get(self, request, id=None):
         return render(request, 'app-details-schedules.html', context={
             'plan': RecipePlan.get_recipe_plan_data(id),
-            'ref': 1 if request.GET.get('ref') is None else request.GET.get('ref'),
+            'back_link': '/plan/list/' if request.GET.get('ref') is None else request.GET.get('ref'),
         })
 
 
@@ -112,7 +109,7 @@ class PlanList(View):
 
     def get(self, request, page=1):
         plans = Plan.objects.all().extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
-        paginator = Paginator(plans, 2)  # na czas testow, docelowo 50
+        paginator = Paginator(plans, PAGIN_PLANS_PER_PAGE)
         plans = paginator.get_page(page)
         return render(request, 'app-schedules.html', {
             'plans': plans,
