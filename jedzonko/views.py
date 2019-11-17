@@ -180,6 +180,6 @@ class PlanDeleteMeal(View):
 class ViewPage(View):
 
     def get(self, request, slug):
-        return render(request, 'page-base.html', context={
+        return render(request, 'page.html', context={
             'page': get_object_or_404(Page, slug=slug)
         })
