@@ -1,8 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.core.paginator import Paginator
+from django.db.models import Q
 from jedzonko.models import Plan, Recipe, RecipePlan, Page
 from jedzonko.forms import AddModifyRecipeForm, AddPlanForm, PlanAddRecipeForm
+from .settings import *
+import re
 
 
 class LandingPage(View):
@@ -29,13 +32,9 @@ class Dashboard(View):
 class RecipeDetails(View):
 
     def get(self, request, id):
-        if request.GET.get('ref') == 'plan':
-            back_link = '/plan/' + request.GET.get('id')
-        else:
-            back_link = f"/recipe/list/{1 if request.GET.get('ref') is None else request.GET.get('ref')}/"
         return render(request, 'app-recipe-details.html', context={
             'recipe': Recipe.objects.get(id=id),
-            'back_link': back_link,
+            'back_link': '/recipe/list/' if request.GET.get('ref') is None else request.GET.get('ref'),
         })
 
     def post(self, request, id):
@@ -46,7 +45,7 @@ class RecipeDetails(View):
             elif recipe.votes > 0:
                 recipe.votes -= 1
             recipe.save()
-            ref = 1 if request.GET.get('ref') is None else request.GET.get('ref')
+            ref = f'/recipe/list/1/' if request.GET.get('ref') is None else request.GET.get('ref')
             return redirect(f"/recipe/{request.POST.get('recipe_id')}/?ref={ref}")
         return redirect(request.META['PATH_INFO'])
 
@@ -54,9 +53,17 @@ class RecipeDetails(View):
 class RecipeList(View):
 
     def get(self, request, page=1):
-        recipes = Recipe.objects.all().order_by('-votes', '-created')
-        paginator = Paginator(recipes, 5)
-        recipes = paginator.get_page(page)
+        q = Q()
+        if request.GET.get('search') is not None:
+            q |= Q(name__icontains=request.GET.get('search'))
+            q |= Q(description__icontains=request.GET.get('search'))
+        recipes = Recipe.objects.filter(q).order_by('-votes', '-created')
+        recipes = Paginator(recipes, PAGIN_RECIPES_PER_PAGE)
+        recipes = recipes.get_page(page)
+        if request.GET.get('search') is not None:
+            for recipe in recipes:
+                recipe.name = re.sub(rf"({request.GET.get('search')})", r'<b>\1</b>', recipe.name, flags=re.I)
+                recipe.description = re.sub(rf"({request.GET.get('search')})", r'<b>\1</b>', recipe.description, flags=re.I)
         return render(request, 'app-recipes.html', {
             'recipes': recipes,
         })
@@ -104,7 +111,7 @@ class PlanDetails(View):
     def get(self, request, id=None):
         return render(request, 'app-details-schedules.html', context={
             'plan': RecipePlan.get_recipe_plan_data(id),
-            'ref': 1 if request.GET.get('ref') is None else request.GET.get('ref'),
+            'back_link': '/plan/list/' if request.GET.get('ref') is None else request.GET.get('ref'),
         })
 
 
@@ -112,7 +119,7 @@ class PlanList(View):
 
     def get(self, request, page=1):
         plans = Plan.objects.all().extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
-        paginator = Paginator(plans, 2)  # na czas testow, docelowo 50
+        paginator = Paginator(plans, PAGIN_PLANS_PER_PAGE)
         plans = paginator.get_page(page)
         return render(request, 'app-schedules.html', {
             'plans': plans,
@@ -183,6 +190,6 @@ class PlanDeleteMeal(View):
 class ViewPage(View):
 
     def get(self, request, slug):
-        return render(request, 'page-base.html', context={
+        return render(request, 'page.html', context={
             'page': get_object_or_404(Page, slug=slug)
         })

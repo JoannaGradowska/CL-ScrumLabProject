@@ -1,6 +1,6 @@
 from django.template.library import Library
 from jedzonko.models import Page
-
+import re
 
 register = Library()
 
@@ -16,8 +16,7 @@ def in_slugs(slug):
 @register.simple_tag(takes_context=True)
 def activeclass(context, slug):
     request = context['request']
-    path = request.META['PATH_INFO'].strip(' /')
-    if slug == path[:len(slug)]:
+    if re.match(r'^'+slug, request.META['PATH_INFO'].strip(' /')):
         return ' active'
     else:
         return ''

@@ -492,3 +492,7 @@ form.dispinl {
 .autowidth {
   width: auto;
 }
+
+tr.recipies td b {
+  color: #444;
+}
