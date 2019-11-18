@@ -31,7 +31,7 @@
                     <a href="/plan/{{ meal.plan_id }}/" class="btn btn-info rounded-0 text-light m-1">Wróć do planu</a>
                 </td>
                 <td class="col-2 center">
-                    <form action="" method="post">
+                    <form method="post">
                         <input type="hidden" name="meal_id" value="{{ meal.id }}">
                         <button type="submit" class="btn btn-danger rounded-0 text-light m-1"><b>Usuń posiłek</b></button>
                         {% csrf_token %}
