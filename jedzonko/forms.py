@@ -38,8 +38,8 @@ class AddPlanForm(forms.Form):
         label="Opis planu",
         widget=forms.Textarea(
             attrs={'class': 'form-control',
-                   'placeholder': """np. Ten plan jest doskonały, na chłodne, styczniowe dni. 
-                                Przyprawy poprawią Ci krążenie, dzięki czemu nie będzie Ci tak zimno."""}
+                   'placeholder': "np. Ten plan jest doskonały, na chłodne, styczniowe dni. "
+                                  "Przyprawy poprawią Ci krążenie, dzięki czemu nie będzie Ci tak zimno."},
         )
     )
 
