@@ -14,11 +14,14 @@ class AddModifyRecipeForm(forms.ModelForm):
             'preparation': 'Sposób przygotowania',
         }
         widgets = {
-            'name': forms.TextInput(attrs={'class': 'w-100 p-1', 'placeholder': 'nazwa przepisu'}),
-            'description': forms.Textarea(attrs={'class': 'w-100 p-1', 'rows': 5, 'placeholder': 'opis przepisu'}),
-            'preparation_time': forms.NumberInput(attrs={'class': 'p-1', 'placeholder': 'minuty', 'min': 1}),
-            'preparation': forms.Textarea(attrs={'class': 'w-100 p-1', 'rows': 10, 'placeholder': 'sposób przygotowania'}),
-            'ingredients': forms.Textarea(attrs={'class': 'w-100 p-1', 'rows': 10, 'placeholder': 'potrzebne składniki'}),
+            'name': forms.TextInput(attrs={'class': 'w-100 p-1', 'placeholder': 'Spaghetti bolognese'}),
+            'description': forms.Textarea(
+                attrs={'class': 'w-100 p-1', 'rows': 5, 'placeholder': 'Tradycyjne włoskie danie'}),
+            'preparation_time': forms.NumberInput(attrs={'class': 'p-1', 'placeholder': 'w minutach', 'min': 1}),
+            'preparation': forms.Textarea(attrs={'class': 'w-100 p-1', 'rows': 10, 'placeholder': 'krok po kroku'}),
+            'ingredients': forms.Textarea(attrs={'class': 'w-100 p-1', 'rows': 10,
+                                                 'placeholder': "makaron spaghetti, mięso mielone, passata pomidorowa",
+                                                 })
         }
 
 
@@ -29,7 +32,7 @@ class AddPlanForm(forms.Form):
         strip=True,
         label="Nazwa planu",
         widget=forms.TextInput(
-            attrs={'class': 'form-control', 'placeholder': 'np. Plan zimowy'}
+            attrs={'class': 'form-control', 'placeholder': 'Plan zimowy'}
         )
     )
     description = forms.CharField(
@@ -38,7 +41,7 @@ class AddPlanForm(forms.Form):
         label="Opis planu",
         widget=forms.Textarea(
             attrs={'class': 'form-control',
-                   'placeholder': "np. Ten plan jest doskonały, na chłodne, styczniowe dni. "
+                   'placeholder': "Ten plan jest doskonały, na chłodne, styczniowe dni. "
                                   "Przyprawy poprawią Ci krążenie, dzięki czemu nie będzie Ci tak zimno."},
         )
     )
