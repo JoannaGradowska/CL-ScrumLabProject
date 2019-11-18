@@ -29,14 +29,16 @@ class AddPlanForm(forms.Form):
         strip=True,
         label="Nazwa planu",
         widget=forms.TextInput(
-            attrs={'class': 'form-control', 'placeholder': 'nazwa planu'}
+            attrs={'class': 'form-control', 'placeholder': 'np. Plan zimowy'}
         )
     )
     description = forms.CharField(
         min_length=10,
         strip=True,
+        label="Opis planu",
         widget=forms.Textarea(
-            attrs={'class': 'form-control', 'placeholder': 'opis planu'}
+            attrs={'class': 'form-control',
+                   'placeholder': 'np. Ten plan jest doskonały, na chłodne, styczniowe dni. Przyprawy poprawią Ci krążenie, dzięki czemu nie będzie Ci tak zimno.'}
         )
     )
 
@@ -55,14 +57,14 @@ class PlanAddRecipeForm(forms.Form):
         strip=True,
         label='Nazwa posiłku',
         widget=forms.TextInput(
-            attrs={'class': 'form-control', 'placeholder': 'nazwa posiłku'},
+            attrs={'class': 'form-control', 'placeholder': 'np. śniadanie'},
         ),
     )
     order = forms.IntegerField(
         min_value=1,
         label='Numer posiłku',
         widget=forms.NumberInput(
-            attrs={'class': 'form-control', 'placeholder': 'pozycja na liście'},
+            attrs={'class': 'form-control', 'placeholder': 'kolejność'},
         ),
     )
     recipe_id = forms.ModelChoiceField(
