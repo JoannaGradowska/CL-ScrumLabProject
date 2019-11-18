@@ -23,19 +23,19 @@
                     {% endif %}
                     <tbody>
                     <tr class="d-flex">
-                        <th scope="row" class="col-2">{{ form.name.label }}</th>
+                        <th scope="row" class="col-2">{{ form.name.label_tag }}</th>
                         <td class="col-7">
                             {{ form.name }}
                         </td>
                     </tr>
                     <tr class="d-flex">
-                        <th scope="row" class="col-2">{{ form.description.label }}</th>
+                        <th scope="row" class="col-2">{{ form.description.label_tag }}</th>
                         <td class="col-7">
                             {{ form.description }}
                         </td>
                     </tr>
                     <tr class="d-flex">
-                        <th scope="row" class="col-2">{{ form.preparation_time.label }}</th>
+                        <th scope="row" class="col-2">{{ form.preparation_time.label_tag }}</th>
                         <td class="col-3">
                             {{ form.preparation_time }}
                         </td>
@@ -45,10 +45,10 @@
 
                 <div class="row d-flex">
                     <div class="col-5 border-bottom border-3"><h3
-                            class="text-uppercase">{{ form.preparation.label }}</h3></div>
+                            class="text-uppercase">{{ form.preparation.label_tag }}</h3></div>
                     <div class="col-2"></div>
                     <div class="col-5 border-bottom border-3"><h3
-                            class="text-uppercase">{{ form.ingredients.label }}</h3></div>
+                            class="text-uppercase">{{ form.ingredients.label_tag }}</h3></div>
                 </div>
                 <div class="row d-flex">
                     <div class="col-5 p-4">
