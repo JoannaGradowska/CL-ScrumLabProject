@@ -34,10 +34,11 @@
                 <th scope="row" class="col-2">Liczba polubień</th>
                 <td class="col-7">
                     {{ recipe.votes }}
-                    <form action="" method="post" class="dispinl">
+                    <form method="post" class="dispinl">
                         <input type="hidden" name="recipe_id" value="{{ recipe.id }}">
-                        <input type="submit" name="add" value="polub przepis" class="btn btn-success btn-sm">
-                        <input type="submit" name="sub" value="nie lubię przepisu" class="btn btn-danger btn-sm">
+                        <input type="submit" name="add" value="lubię przepis"
+                               class="btn btn-success rounded-2 pt-0 pb-0 pr-2 pl-2" style="font-size: 16px">
+                        <input type="submit" name="sub" value="nie lubię przepisu" class="btn btn-danger rounded-2 pt-0 pb-0 pr-2 pl-2" style="font-size: 16px">
                         {% csrf_token %}
                     </form>
                 </td>

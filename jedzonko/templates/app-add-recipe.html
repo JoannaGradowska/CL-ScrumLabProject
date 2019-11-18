@@ -1,61 +1,73 @@
 {% extends "__base__.html" %}
+
 {% block title %}Nowy przepis{% endblock %}
+
 {% block content %}
-<div class="dashboard-content border-dashed p-3 m-4 view-height">
+    <div class="dashboard-content border-dashed p-3 m-4 view-height">
 
-    <form action="" method="post">
+        <form action="/recipe/add/" method="post">
 
-        <div class="mt-4 ml-4 mr-4">
-            <div class="row border-bottom border-3">
-                <div class="col"><h3 class="color-header text-uppercase">Nowy przepis</h3></div>
-                <div class="col d-flex justify-content-end mb-2">
-                    <button type="submit" class="btn btn-color rounded-0 pt-0 pb-0 pr-4 pl-4">Zapisz</button>
+            <div class="mt-4 ml-4 mr-4">
+                <div class="row border-bottom border-3">
+                    <div class="col">
+                        <h3 class="color-header text-uppercase">Nowy przepis</h3>
+                    </div>
+                    <div class="col d-flex justify-content-end mb-2">
+                        <button type="submit" class="btn btn-color rounded-0 pt-0 pb-0 pr-4 pl-4">Zapisz</button>
+                    </div>
+                </div>
+
+                <table class="table borderless">
+                    {% if error_message %}
+                        <caption class="text-danger">{{ error_message }}</caption>
+                    {% endif %}
+                    <tbody>
+                    <tr class="d-flex">
+                        <th scope="row" class="col-2">{{ form.name.label_tag }}</th>
+                        <td class="col-7">
+                            {{ form.name }}
+                        </td>
+                    </tr>
+                    <tr class="d-flex">
+                        <th scope="row" class="col-2">{{ form.description.label_tag }}</th>
+                        <td class="col-7">
+                            {{ form.description }}
+                        </td>
+                    </tr>
+                    <tr class="d-flex">
+                        <th scope="row" class="col-2">{{ form.preparation_time.label_tag }}</th>
+                        <td class="col-3">
+                            {{ form.preparation_time }}
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+
+                <div class="row d-flex">
+                    <div class="col-5 border-bottom border-3">
+                        <h3 class="text-uppercase">
+                            {{ form.preparation.label_tag }}
+                        </h3>
+                    </div>
+                    <div class="col-2"></div>
+                    <div class="col-5 border-bottom border-3">
+                        <h3 class="text-uppercase">
+                            {{ form.ingredients.label_tag }}
+                        </h3>
+                    </div>
+                </div>
+                <div class="row d-flex">
+                    <div class="col-5 p-4">
+                        {{ form.preparation }}
+                    </div>
+                    <div class="col-2"></div>
+
+                    <div class="col-5 p-4">
+                        {{ form.ingredients }}
+                    </div>
                 </div>
             </div>
-
-            <table class="table borderless">
-{% if error_message %}
-                <caption class="text-danger">{{ error_message }}</caption>
-{% endif %}
-                <tbody>
-                <tr class="d-flex">
-                    <th scope="row" class="col-2">{{ form.name.label }}</th>
-                    <td class="col-7">
-                        {{ form.name }}
-                    </td>
-                </tr>
-                <tr class="d-flex">
-                    <th scope="row" class="col-2">{{ form.description.label }}</th>
-                    <td class="col-7">
-                        {{ form.description }}
-                    </td>
-                </tr>
-                <tr class="d-flex">
-                    <th scope="row" class="col-2">{{ form.preparation_time.label }}</th>
-                    <td class="col-3">
-                        {{ form.preparation_time }}
-                    </td>
-                </tr>
-                </tbody>
-            </table>
-
-            <div class="row d-flex">
-                <div class="col-5 border-bottom border-3"><h3 class="text-uppercase">{{ form.preparation.label }}</h3></div>
-                <div class="col-2"></div>
-                <div class="col-5 border-bottom border-3"><h3 class="text-uppercase">{{ form.ingredients.label }}</h3></div>
-            </div>
-            <div class="row d-flex">
-                <div class="col-5 p-4">
-                    {{ form.preparation }}
-                </div>
-                <div class="col-2"></div>
-
-                <div class="col-5 p-4">
-                    {{ form.ingredients }}
-                </div>
-            </div>
-        </div>
             {% csrf_token %}
-    </form>
-</div>
+        </form>
+    </div>
 {% endblock content %}

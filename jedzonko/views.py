@@ -3,7 +3,7 @@ from django.views import View
 from django.core.paginator import Paginator
 from django.db.models import Q
 from jedzonko.models import Plan, Recipe, RecipePlan, Page
-from jedzonko.forms import AddModifyRecipeForm, AddPlanForm, PlanAddRecipeForm
+from jedzonko.forms import *
 from .settings import *
 import re
 
@@ -98,8 +98,9 @@ class RecipeModify(View):
 
     def post(self, request, id=None):
         # ponizszej linii uzyjemy, jak bedziemy chcieli edytowac ten sam przepis
-        # form = ModifyRecipeForm(request.POST, instance=Recipe.objects.get(pk=id))
-        form = AddModifyRecipeForm(request.POST)
+        form = AddModifyRecipeForm(request.POST, instance=Recipe.objects.get(pk=id))
+        # a tej jeśli chcemy modyfikować i dodawać nowy
+        # form = AddModifyRecipeForm(request.POST)
         if form.is_valid():
             form.save()
             return redirect('/recipe/list/')
