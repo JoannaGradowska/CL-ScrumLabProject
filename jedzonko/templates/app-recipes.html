@@ -9,7 +9,7 @@
         </div>
         <div class="col noPadding d-flex justify-content-start mb-2">
             <form method="get">
-                <input type="text" name="search" value="{{ request.GET.search }}" minlength="3" placeholder="szukaj w nazwie i opisie">
+                <input type="text" name="search" value="{{ request.GET.search }}" minlength="3" placeholder=" szukaj w nazwie i opisie">
                 <button type="submit" class="btn btn-color rounded-2 pt-0 pb-0 pr-2 pl-2" style="font-size: 16px">szukaj</button>
             </form>
         </div>
@@ -41,7 +41,7 @@
                 <td class="col-2 d-flex align-items-center justify-content-center flex-wrap">
                     <a href="/recipe/{{ recipe.id }}/?ref={{ request.META.PATH_INFO }}{% if request.META.QUERY_STRING %}?{% endif %}{{ request.META.QUERY_STRING }}" class="btn btn-info rounded-0 text-light m-1">Szczegóły</a>
                     <a href="/recipe/modify/{{ recipe.id }}/" class="btn btn-warning rounded-0 text-light m-1">Edytuj</a>
-                    <a href="#" class="btn btn-danger rounded-0 text-light m-1">Usuń</a>
+                    <a href="/recipe/delete/{{ recipe.id }}" class="btn btn-danger rounded-0 text-light m-1">Usuń</a>
                 </td>
             </tr>
 {% endfor %}

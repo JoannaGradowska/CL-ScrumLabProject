@@ -1,11 +1,13 @@
-from django.shortcuts import render, redirect, get_object_or_404
-from django.views import View
+import re
+
 from django.core.paginator import Paginator
 from django.db.models import Q
-from jedzonko.models import Plan, Recipe, RecipePlan, Page
+from django.shortcuts import render, redirect, get_object_or_404
+from django.views import View
+
 from jedzonko.forms import *
+from jedzonko.models import RecipePlan, Page
 from .settings import *
-import re
 
 
 class LandingPage(View):
@@ -186,6 +188,21 @@ class PlanDeleteMeal(View):
             meal.delete()
             return redirect(f'/plan/{meal.plan_id}/')
         return self.get(request, meal_id)
+
+
+class DeleteRecipe(View):
+
+    def get(self, request, recipe_id):
+        return render(request, 'app-delete-recipe.html', context={
+            'recipe': get_object_or_404(Recipe, pk=recipe_id), 'plans': RecipePlan.objects.filter(recipe_id=recipe_id),
+        })
+
+    def post(self, request, recipe_id):
+        if recipe_id == int(request.POST.get('recipe_id')):
+            recipe = get_object_or_404(Recipe, id=recipe_id)
+            recipe.delete()
+            return redirect('/recipe/list/')
+        return self.get(request, recipe_id)
 
 
 class ViewPage(View):
