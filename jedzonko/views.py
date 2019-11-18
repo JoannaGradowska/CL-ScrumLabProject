@@ -2,9 +2,9 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.core.paginator import Paginator
 from django.db.models import Q
-from jedzonko.models import Plan, Recipe, RecipePlan, Page
-from jedzonko.forms import *
-from .settings import *
+from jedzonko.models import Recipe, Plan, RecipePlan, Page
+from jedzonko.forms import AddModifyRecipeForm, AddPlanForm, PlanAddRecipeForm
+from jedzonko.settings import PAGIN_CONFIG
 import re
 
 
@@ -58,7 +58,7 @@ class RecipeList(View):
             q |= Q(name__icontains=request.GET.get('search'))
             q |= Q(description__icontains=request.GET.get('search'))
         recipes = Recipe.objects.filter(q).order_by('-votes', '-created')
-        recipes = Paginator(recipes, PAGIN_RECIPES_PER_PAGE)
+        recipes = Paginator(recipes, PAGIN_CONFIG['RECIPES_PER_PAGE'])
         recipes = recipes.get_page(page)
         if request.GET.get('search') is not None:
             for recipe in recipes:
@@ -120,7 +120,7 @@ class PlanList(View):
 
     def get(self, request, page=1):
         plans = Plan.objects.all().extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
-        paginator = Paginator(plans, PAGIN_PLANS_PER_PAGE)
+        paginator = Paginator(plans, PAGIN_CONFIG['PLANS_PER_PAGE'])
         plans = paginator.get_page(page)
         return render(request, 'app-schedules.html', {
             'plans': plans,
