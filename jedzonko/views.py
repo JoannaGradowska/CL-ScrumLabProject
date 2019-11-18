@@ -1,9 +1,11 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.core.paginator import Paginator
+from django.db.models import Q
 from jedzonko.models import Plan, Recipe, RecipePlan, Page
 from jedzonko.forms import AddModifyRecipeForm, AddPlanForm, PlanAddRecipeForm
 from .settings import *
+import re
 
 
 class LandingPage(View):
@@ -51,9 +53,17 @@ class RecipeDetails(View):
 class RecipeList(View):
 
     def get(self, request, page=1):
-        recipes = Recipe.objects.all().order_by('-votes', '-created')
-        paginator = Paginator(recipes, PAGIN_RECIPES_PER_PAGE)
-        recipes = paginator.get_page(page)
+        q = Q()
+        if request.GET.get('search') is not None:
+            q |= Q(name__icontains=request.GET.get('search'))
+            q |= Q(description__icontains=request.GET.get('search'))
+        recipes = Recipe.objects.filter(q).order_by('-votes', '-created')
+        recipes = Paginator(recipes, PAGIN_RECIPES_PER_PAGE)
+        recipes = recipes.get_page(page)
+        if request.GET.get('search') is not None:
+            for recipe in recipes:
+                recipe.name = re.sub(rf"({request.GET.get('search')})", r'<b>\1</b>', recipe.name, flags=re.I)
+                recipe.description = re.sub(rf"({request.GET.get('search')})", r'<b>\1</b>', recipe.description, flags=re.I)
         return render(request, 'app-recipes.html', {
             'recipes': recipes,
         })
