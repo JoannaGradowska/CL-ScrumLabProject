@@ -7,15 +7,16 @@
 
         <form action="/recipe/add/" method="post">
 
-            <div class="mt-4 ml-4 mr-4">
-                <div class="row border-bottom border-3">
-                    <div class="col">
-                        <h3 class="color-header text-uppercase">Nowy przepis</h3>
-                    </div>
-                    <div class="col d-flex justify-content-end mb-2">
-                        <button type="submit" class="btn btn-color rounded-0 pt-0 pb-0 pr-4 pl-4">Zapisz</button>
-                    </div>
+            <div class="row border-bottom border-3 p-1 m-1">
+                <div class="col">
+                    <h3 class="color-header text-uppercase">Nowy przepis</h3>
                 </div>
+                <div class="col d-flex justify-content-end mb-2">
+                    <button type="submit" class="btn btn-color rounded-0 pt-0 pb-0 pr-4 pl-4">Zapisz</button>
+                </div>
+            </div>
+
+            <div class="mt-4 ml-4 mr-4">
 
                 <table class="table borderless">
                     {% if error_message %}
