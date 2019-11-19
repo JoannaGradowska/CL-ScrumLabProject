@@ -187,9 +187,10 @@ class PlanDeleteMeal(View):
             return redirect(f'/plan/{meal.plan_id}/')
         return self.get(request, meal_id)
 
-import pprint
+
 def get_int_from_mord(mord):
     return mord[5:]
+
 
 class PlanModify(View):
 
@@ -207,7 +208,10 @@ class PlanModify(View):
         orders = request.POST.getlist('meals_order')
         plan_new_order = []
         for o in orders:
-            plan_new_order.append( list(map(get_int_from_mord, o.split(',') ) ) )
+            if len(o) > 2:
+                plan_new_order.append(list(map(get_int_from_mord, o.split(','))))
+            else:
+                plan_new_order.append(0)
 
         plan_new_data = {'meals': {}}
         plan_new_days = []
@@ -240,39 +244,32 @@ class PlanModify(View):
             if isinstance(day, list) and len(day) > 0:
                 for meal in day:
                     recipeplan = RecipePlan.objects.get(pk=meal)
-                    recipeplan.meal_name = plan_new_data['meals'][meal]['name']
-                    recipeplan.order = order
-                    recipeplan.day_name_id = plan_new_days[ day_index ]
-                    recipeplan.recipe_id = plan_new_data['meals'][meal]['recipe_id']
-                    recipeplan.save()
-                    print(f"meal id: {meal} => "
-                          f"name: {plan_new_data['meals'][meal]['name']}, "
-                          f"order: {order}, "
-                          f"old_day: {plan_new_data['meals'][meal]['old_day']}, "
-                          f"day_id: {plan_new_days[ day_index ]}, "
-                          f"plan_id: {plan_new_data['id']}, "
-                          f"recipe_id: {plan_new_data['meals'][meal]['recipe_id']}")
-                    print('===========================================================')
+                    if plan_new_data['meals'][meal]['del']:
+                        recipeplan.delete()
+                    else:
+                        recipeplan.meal_name = plan_new_data['meals'][meal]['name']
+                        recipeplan.order = order
+                        recipeplan.day_name_id = plan_new_days[ day_index ]
+                        recipeplan.recipe_id = plan_new_data['meals'][meal]['recipe_id']
+                        recipeplan.save()
                     order += 1
-                day_index += 1
-        print('================================================')
-        pprint.pprint(plan_new_order)
-        print('================================================')
-        pprint.pprint(plan_new_days)
-        print('================================================')
-        pprint.pprint(plan_new_data)
-        print('================================================')
-
+            day_index += 1
         return redirect(f'/plan/{plan_id}/')
 
-        # return render(request, 'app-edit-schedules.html', context={
-        #     'plan': plan,
-        #     'days': days,
-        #     'orders': plan_new_order,
-        #     'recipes': recipes,
-        #     'plandata': pprint.pformat(plan_new_data),
-        #     'post': pprint.pformat(request.POST),
-        # })
+
+class DeleteRecipe(View):
+
+    def get(self, request, recipe_id):
+        return render(request, 'app-delete-recipe.html', context={
+            'recipe': get_object_or_404(Recipe, pk=recipe_id), 'plans': RecipePlan.objects.filter(recipe_id=recipe_id),
+        })
+
+    def post(self, request, recipe_id):
+        if recipe_id == int(request.POST.get('recipe_id')):
+            recipe = get_object_or_404(Recipe, id=recipe_id)
+            recipe.delete()
+            return redirect('/recipe/list/')
+        return self.get(request, recipe_id)
 
 
 class ViewPage(View):

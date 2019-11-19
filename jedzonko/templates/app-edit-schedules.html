@@ -14,14 +14,6 @@
             </div>
         </div>
 
-{#<div style="border: 4px dotted #ee3;">#}
-{#<pre style="border: 2px dotted #33e;">{{ plandata }}</pre>#}
-{#</div>#}
-{#<div style="border: 2px dotted #e33;">#}
-{#    {{ orders }}#}
-{#<pre style="border: 2px dotted #33e;">{{ post }}</pre>#}
-{#</div>#}
-
         <div class="schedules-content">
             <div class="form-group row">
                 <label for="id_plan_name" class="col-sm-2 label-size col-form-label">Nazwa planu</label>
@@ -65,7 +57,7 @@
                         <a class="btn btn-primary btn-sm active sorthandle">ustaw kolejność / przenieś</a>
                     </td>
                     <td class="col-1">
-                        <input type="checkbox" name="plan_days_{{ day.id }}_meals_{{ meal.id }}_del" value="1" id="del_meal_{{ meal.id }}">
+                        <input type="checkbox" class="delmeal" name="plan_days_{{ day.id }}_meals_{{ meal.id }}_del" value="1" id="del_meal_{{ meal.id }}">
                         <label for="del_meal_{{ meal.id }}">usuń</label>
                     </td>
                 </tr>

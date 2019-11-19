@@ -16,6 +16,16 @@ $(function () {
         }).disableSelection();
     })
 
+    $('.delmeal').each(function() {
+        $(this).change(function () {
+            if(this.checked) {
+                $(this).parent().parent().attr('style', 'background: #fdd;')
+            } else {
+                $(this).parent().parent().attr('style', 'background: #eef;')
+            }
+        })
+    })
+
 });
 
 function counting() {
