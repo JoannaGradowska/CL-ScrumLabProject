@@ -1,26 +1,21 @@
 {% extends "__base__.html" %}
-
 {% block title %}Nowy plan{% endblock %}
-
 {% block content %}
-    <div class="dashboard-content border-dashed p-3 m-4 view-height">
+<div class="dashboard-content border-dashed p-3 m-4 view-height">
 
-        <form action="/plan/add/" method="post">
+    <form action="/plan/add/" method="post">
 
-            <div class="row border-bottom border-3 p-1 m-1">
-                <div class="col">
-                    <h3 class="color-header text-uppercase">Nowy plan</h3>
-                </div>
-                <div class="col d-flex justify-content-end mb-2">
-                    <button type="submit" class="btn btn-color rounded-0 pt-0 pb-0 pr-4 pl-4">Zapisz</button>
-                </div>
+        <div class="row border-bottom border-3 p-1 m-1">
+            <div class="col">
+                <h3 class="color-header text-uppercase">Nowy plan</h3>
             </div>
+            <div class="col d-flex justify-content-end mb-2">
+                <button type="submit" class="btn btn-color rounded-0 pt-0 pb-0 pr-4 pl-4">Zapisz</button>
+            </div>
+        </div>
 
-            <table class="table borderless">
-                {% if error_message %}
-                    <caption class="text-danger">{{ error_message }}</caption>
-                {% endif %}
-                <tbody>
+        <table class="table borderless">
+            <tbody>
                 <tr class="d-flex">
                     <th scope="row" class="col-2">{{ form.name.label_tag }}</th>
                     <td class="col-7">
@@ -33,10 +28,10 @@
                         {{ form.description }}
                     </td>
                 </tr>
-                </tbody>
-            </table>
-            {% csrf_token %}
-        </form>
+            </tbody>
+        </table>
+        {% csrf_token %}
+    </form>
 
-    </div>
+</div>
 {% endblock content %}
