@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
 from django.core.paginator import Paginator
 from django.db.models import Q
-from jedzonko.models import Recipe, Plan, RecipePlan, Page
+from jedzonko.models import Recipe, Plan, RecipePlan, Page, DayName
 from jedzonko.forms import AddModifyRecipeForm, AddPlanForm, PlanAddRecipeForm
 from jedzonko.settings import PAGIN_CONFIG
 import re
@@ -186,6 +186,93 @@ class PlanDeleteMeal(View):
             meal.delete()
             return redirect(f'/plan/{meal.plan_id}/')
         return self.get(request, meal_id)
+
+import pprint
+def get_int_from_mord(mord):
+    return mord[5:]
+
+class PlanModify(View):
+
+    def get(self, request, plan_id):
+        plan = RecipePlan.get_recipe_plan_data(plan_id)
+        days = DayName.objects.all().order_by('order')
+        recipes = Recipe.objects.all().order_by('name')
+        return render(request, 'app-edit-schedules.html', context={
+            'plan': plan,
+            'days': days,
+            'recipes': recipes,
+        })
+
+    def post(self, request, plan_id):
+        orders = request.POST.getlist('meals_order')
+        plan_new_order = []
+        for o in orders:
+            plan_new_order.append( list(map(get_int_from_mord, o.split(',') ) ) )
+
+        plan_new_data = {'meals': {}}
+        plan_new_days = []
+        for key in request.POST:
+            m = re.findall(r"plan_(id|name|description|days)_?(\d+)?_?(id|meals)?_?(\d+)?_?(recipe_id|name|del)?", key)
+            if m:
+                m = m[0]
+                if m[0] == 'id' or m[0] == 'name' or m[0] == 'description':
+                    plan_new_data[m[0]] = request.POST.get('plan_'+m[0])
+                if m[0] == 'days' and m[2] == 'id':
+                    plan_new_days.append(int(request.POST.get('plan_days_'+m[1]+'_id')))
+                if m[0] == 'days' and m[2] == 'meals':
+                    plan_new_data['meals'].update({
+                        m[3]: {
+                            'del': request.POST.get('plan_days_'+m[1]+'_meals_'+m[3]+'_del'),
+                            'name': request.POST.get('plan_days_'+m[1]+'_meals_'+m[3]+'_name'),
+                            'recipe_id': request.POST.get('plan_days_' + m[1] + '_meals_' + m[3] + '_recipe_id'),
+                            'old_day': m[1],
+                        }
+                    })
+
+        plan = Plan.objects.get(pk=plan_id)
+        plan.name = plan_new_data['name']
+        plan.description = plan_new_data['description']
+        plan.save()
+
+        order = 1
+        day_index = 0
+        for day in plan_new_order:
+            if isinstance(day, list) and len(day) > 0:
+                for meal in day:
+                    recipeplan = RecipePlan.objects.get(pk=meal)
+                    recipeplan.meal_name = plan_new_data['meals'][meal]['name']
+                    recipeplan.order = order
+                    recipeplan.day_name_id = plan_new_days[ day_index ]
+                    recipeplan.recipe_id = plan_new_data['meals'][meal]['recipe_id']
+                    recipeplan.save()
+                    print(f"meal id: {meal} => "
+                          f"name: {plan_new_data['meals'][meal]['name']}, "
+                          f"order: {order}, "
+                          f"old_day: {plan_new_data['meals'][meal]['old_day']}, "
+                          f"day_id: {plan_new_days[ day_index ]}, "
+                          f"plan_id: {plan_new_data['id']}, "
+                          f"recipe_id: {plan_new_data['meals'][meal]['recipe_id']}")
+                    print('===========================================================')
+                    order += 1
+                day_index += 1
+        print('================================================')
+        pprint.pprint(plan_new_order)
+        print('================================================')
+        pprint.pprint(plan_new_days)
+        print('================================================')
+        pprint.pprint(plan_new_data)
+        print('================================================')
+
+        return redirect(f'/plan/{plan_id}/')
+
+        # return render(request, 'app-edit-schedules.html', context={
+        #     'plan': plan,
+        #     'days': days,
+        #     'orders': plan_new_order,
+        #     'recipes': recipes,
+        #     'plandata': pprint.pformat(plan_new_data),
+        #     'post': pprint.pformat(request.POST),
+        # })
 
 
 class ViewPage(View):
