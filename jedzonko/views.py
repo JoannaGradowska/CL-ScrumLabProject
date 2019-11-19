@@ -1,13 +1,11 @@
-import re
-
-from django.core.paginator import Paginator
-from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views import View
-
-from jedzonko.forms import *
-from jedzonko.models import RecipePlan, Page
-from .settings import *
+from django.core.paginator import Paginator
+from django.db.models import Q
+from jedzonko.models import Recipe, Plan, RecipePlan, Page, DayName
+from jedzonko.forms import AddModifyRecipeForm, AddPlanForm, PlanAddRecipeForm
+from jedzonko.settings import PAGIN_CONFIG
+import re
 
 
 class LandingPage(View):
@@ -60,7 +58,7 @@ class RecipeList(View):
             q |= Q(name__icontains=request.GET.get('search'))
             q |= Q(description__icontains=request.GET.get('search'))
         recipes = Recipe.objects.filter(q).order_by('-votes', '-created')
-        recipes = Paginator(recipes, PAGIN_RECIPES_PER_PAGE)
+        recipes = Paginator(recipes, PAGIN_CONFIG['RECIPES_PER_PAGE'])
         recipes = recipes.get_page(page)
         if request.GET.get('search') is not None:
             for recipe in recipes:
@@ -122,7 +120,7 @@ class PlanList(View):
 
     def get(self, request, page=1):
         plans = Plan.objects.all().extra(select={'lower_name': 'lower(name)'}).order_by('lower_name')
-        paginator = Paginator(plans, PAGIN_PLANS_PER_PAGE)
+        paginator = Paginator(plans, PAGIN_CONFIG['PLANS_PER_PAGE'])
         plans = paginator.get_page(page)
         return render(request, 'app-schedules.html', {
             'plans': plans,
@@ -188,6 +186,75 @@ class PlanDeleteMeal(View):
             meal.delete()
             return redirect(f'/plan/{meal.plan_id}/')
         return self.get(request, meal_id)
+
+
+def get_int_from_mord(mord):
+    return mord[5:]
+
+
+class PlanModify(View):
+
+    def get(self, request, plan_id):
+        plan = RecipePlan.get_recipe_plan_data(plan_id)
+        days = DayName.objects.all().order_by('order')
+        recipes = Recipe.objects.all().order_by('name')
+        return render(request, 'app-edit-schedules.html', context={
+            'plan': plan,
+            'days': days,
+            'recipes': recipes,
+        })
+
+    def post(self, request, plan_id):
+        orders = request.POST.getlist('meals_order')
+        plan_new_order = []
+        for o in orders:
+            if len(o) > 2:
+                plan_new_order.append(list(map(get_int_from_mord, o.split(','))))
+            else:
+                plan_new_order.append(0)
+
+        plan_new_data = {'meals': {}}
+        plan_new_days = []
+        for key in request.POST:
+            m = re.findall(r"plan_(id|name|description|days)_?(\d+)?_?(id|meals)?_?(\d+)?_?(recipe_id|name|del)?", key)
+            if m:
+                m = m[0]
+                if m[0] == 'id' or m[0] == 'name' or m[0] == 'description':
+                    plan_new_data[m[0]] = request.POST.get('plan_'+m[0])
+                if m[0] == 'days' and m[2] == 'id':
+                    plan_new_days.append(int(request.POST.get('plan_days_'+m[1]+'_id')))
+                if m[0] == 'days' and m[2] == 'meals':
+                    plan_new_data['meals'].update({
+                        m[3]: {
+                            'del': request.POST.get('plan_days_'+m[1]+'_meals_'+m[3]+'_del'),
+                            'name': request.POST.get('plan_days_'+m[1]+'_meals_'+m[3]+'_name'),
+                            'recipe_id': request.POST.get('plan_days_' + m[1] + '_meals_' + m[3] + '_recipe_id'),
+                            'old_day': m[1],
+                        }
+                    })
+
+        plan = Plan.objects.get(pk=plan_id)
+        plan.name = plan_new_data['name']
+        plan.description = plan_new_data['description']
+        plan.save()
+
+        order = 1
+        day_index = 0
+        for day in plan_new_order:
+            if isinstance(day, list) and len(day) > 0:
+                for meal in day:
+                    recipeplan = RecipePlan.objects.get(pk=meal)
+                    if plan_new_data['meals'][meal]['del']:
+                        recipeplan.delete()
+                    else:
+                        recipeplan.meal_name = plan_new_data['meals'][meal]['name']
+                        recipeplan.order = order
+                        recipeplan.day_name_id = plan_new_days[ day_index ]
+                        recipeplan.recipe_id = plan_new_data['meals'][meal]['recipe_id']
+                        recipeplan.save()
+                    order += 1
+            day_index += 1
+        return redirect(f'/plan/{plan_id}/')
 
 
 class DeleteRecipe(View):

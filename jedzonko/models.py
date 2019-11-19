@@ -50,9 +50,11 @@ class RecipePlan(models.Model):
             'description': 'plan description',
             'days': [
                 {
+                    'id': day_id,
                     'name': 'day name',
                     'meals': [
                         {
+                            'id': meal_id,
                             'name': 'meal name',
                             'recipe_id': recipe_id,
                             'recipe_name': 'recipe name',
@@ -86,6 +88,7 @@ class RecipePlan(models.Model):
                 })
                 if i + 1 == len(recipe_plan) or recipe_plan[i + 1].day_name_id != recipe_plan[i].day_name_id:
                     recipe_plan_data['days'].append({
+                        'id': recipe_plan[i].day_name.id,
                         'name': recipe_plan[i].day_name.day_name,
                         'meals': meals,
                     })

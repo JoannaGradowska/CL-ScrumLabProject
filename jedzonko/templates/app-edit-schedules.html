@@ -1,44 +1,78 @@
 {% extends "__base__.html" %}
-{% block title %}{% endblock title %}
+{% block title %}Edycja planu{% endblock title %}
 {% block content %}
 <div class="dashboard-content border-dashed p-3 m-4 view-height">
 
-    <div class="row border-bottom border-3 p-1 m-1">
-        <div class="col noPadding">
-            <h3 class="color-header text-uppercase">NOWY PLAN</h3>
-        </div>
-        <div class="col d-flex justify-content-end mb-2 noPadding">
-            <a href="#" class="btn btn-success rounded-0 pt-0 pb-0 pr-4 pl-4">Zapisz</a>
-        </div>
-    </div>
+    <form method="post">
 
-    <div class="schedules-content">
-        <form>
+        <div class="row border-bottom border-3 p-1 m-1">
+            <div class="col noPadding">
+                <h3 class="color-header text-uppercase">Edycja planu</h3>
+            </div>
+            <div class="col d-flex justify-content-end mb-2">
+                <button type="submit" class="btn btn-success rounded-0 pt-0 pb-0 pr-4 pl-4"><b>Zapisz</b></button>
+            </div>
+        </div>
+
+        <div class="schedules-content">
             <div class="form-group row">
-                <label for="planName"
-                       class="col-sm-2 label-size col-form-label">
-                    Nazwa planu
-                </label>
+                <label for="id_plan_name" class="col-sm-2 label-size col-form-label">Nazwa planu</label>
                 <div class="col-sm-10">
-                    <input class="form-control"
-                           value="Plan jarski na bezmięsny tydzień"
-                           id="planName" placeholder="Nazwa planu">
+                    <input type="hidden" name="plan_id" value="{{ plan.id }}">
+                    <input type="text" class="form-control" name="plan_name" value="{{ plan.name }}" id="id_plan_name">
                 </div>
             </div>
             <div class="form-group row">
-                <label for="planDescription"
-                       class="col-sm-2 label-size col-form-label">
-                    Opis planu
-                </label>
+                <label for="id_plan_description" class="col-sm-2 label-size col-form-label">Opis planu</label>
                 <div class="col-sm-10">
-                                    <textarea class="form-control" rows="5"
-                                              id="planDescription"
-                                              placeholder="Opis plany">
-Pojęcie kuchnia wegetariańska określa pożywienie, które ani nie zawiera mięsa, ani nie zostało przygotowane na bazie pochodzącej z mięsa (np. na rosole drobiowym). Laktoowowegetarianie (najczęściej spotykany typ wegetarian w zachodnim świecie) spożywają nabiał, laktowegetarianie wykluczają jaja, ale nie inne produkty nabiałowe.
-                                    </textarea>
+                    <textarea class="form-control" name="plan_description" rows="5" id="id_plan_description">{{ plan.description }}</textarea>
                 </div>
             </div>
-        </form>
-    </div>
+
+            {% for day in plan.days %}
+            <table class="table">
+                <thead>
+                <tr class="d-flex">
+                    <th class="col-12" colspan="4">
+                        <select name="plan_days_{{ day.id }}_id">
+                            {% for dayn in days %}
+                            <option value="{{ dayn.id }}"{% if dayn.id == day.id %} selected{% endif %}>{{ dayn.day_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </th>
+                </tr>
+                </thead>
+                <tbody class="text-color-lighter connectedSortable" id="sortable{{ day.id }}" style="display: block; min-height: 50px; background: #efe;">
+                {% for meal in day.meals %}
+                <tr id="mord_{{ meal.id }}" style="background: #eef;">
+                    <td class="col-4"><input type="text" class="form-control" name="plan_days_{{ day.id }}_meals_{{ meal.id }}_name" value="{{ meal.name }}" style="min-width: 150px;"></td>
+                    <td class="col-5">
+                        <select name="plan_days_{{ day.id }}_meals_{{ meal.id }}_recipe_id">
+                            {% for recipe in recipes %}
+                            <option value="{{ recipe.id }}"{% if recipe.id == meal.recipe_id %} selected{% endif %}>{{ recipe.name }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td class="col-2">
+                        <a class="btn btn-primary btn-sm active sorthandle">ustaw kolejność / przenieś</a>
+                    </td>
+                    <td class="col-1">
+                        <input type="checkbox" class="delmeal" name="plan_days_{{ day.id }}_meals_{{ meal.id }}_del" value="1" id="del_meal_{{ meal.id }}">
+                        <label for="del_meal_{{ meal.id }}">usuń</label>
+                    </td>
+                </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% endfor %}
+
+            <div class="col d-flex justify-content-end mb-2">
+                <button type="submit" class="btn btn-success rounded-0 pt-0 pb-0 pr-4 pl-4"><b>Zapisz</b></button>
+            </div>
+            <div id="sortlistcontainer" style="visibility: hidden"></div>
+            {% csrf_token %}
+        </div>
+    </form>
+
 </div>
 {% endblock content %}
