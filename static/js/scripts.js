@@ -1,5 +1,17 @@
 $(function () {
 
+    function redisableDaySelectors() {
+        $('.dayselector option').attr('disabled', false)
+        $('.dayselector').each(function(index){
+            otherValues = $(".dayselector").not(this).map(function(){
+                return this.value
+            }).get();
+            $(this).find('option').each(function(){
+                if(otherValues.includes(this.value)) $(this).attr('disabled', true);
+            });
+        });
+    }
+
     $('.connectedSortable').each(function(){
         $('<input name="meals_order" id="m'+$(this).attr('id')+'" value="">').appendTo('#sortlistcontainer')
         $(this).sortable({
@@ -7,24 +19,24 @@ $(function () {
             axis: 'y',
             handle: '.sorthandle',
             create: function( event, ui ) {
-                // alert($(this).attr('id'))
                 $('#m'+$(this).attr('id')).val($('#'+$(this).attr('id')).sortable('toArray'))
             },
             update: function( event, ui ) {
                 $('#m'+$(this).attr('id')).val($('#'+$(this).attr('id')).sortable('toArray'))
             },
         }).disableSelection();
-    })
+    });
 
-    $('.delmeal').each(function() {
-        $(this).change(function () {
-            if(this.checked) {
-                $(this).parent().parent().attr('style', 'background: #fdd;')
-            } else {
-                $(this).parent().parent().attr('style', 'background: #eef;')
-            }
-        })
-    })
+    $('.delmeal').change(function () {
+        $(this).closest('tr').toggleClass('todelete')
+    });
+
+    redisableDaySelectors();
+    $('.dayselector').change(function () {
+        redisableDaySelectors();
+    });
+
+    $('.selectizer').selectize();
 
 });
 

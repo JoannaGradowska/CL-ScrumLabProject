@@ -68,7 +68,7 @@ class PlanAddRecipeForm(forms.Form):
         queryset=Plan.objects.all().order_by('name'),
         label='Wybierz plan',
         widget=forms.Select(attrs={
-            'class': 'custom-select mb-3 autowidth',
+            'class': 'selectizer mb-3 autowidth',
         }),
     )
     meal_name = forms.CharField(
@@ -93,13 +93,13 @@ class PlanAddRecipeForm(forms.Form):
         queryset=Recipe.objects.all().order_by('name'),
         label='Przepis',
         widget=forms.Select(attrs={
-            'class': 'form-control',
+            'class': 'selectizer',
         }),
     )
     day_name_id = forms.ModelChoiceField(
         queryset=DayName.objects.all().order_by('order'),
         label='Dzień',
         widget=forms.Select(attrs={
-            'class': 'form-control',
+            'class': 'selectizer',
         }),
     )

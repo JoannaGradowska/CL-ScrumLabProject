@@ -514,7 +514,6 @@ p.formerror {
     color: #e33;
 }
 
-
 form.dispinl {
     display: inline;
     margin: 0 10px;
@@ -527,3 +526,20 @@ form.dispinl {
 tr.recipies td b {
     color: #444;
 }
+
+/*    plan/modify    */
+table.planedit tbody {
+    display: block;
+    min-height: 50px;
+    background: #efe;
+}
+table.planedit tbody tr {
+    background: #eee;
+}
+table.planedit tbody tr.todelete {
+    background: #fdd;
+}
+#sortlistcontainer {
+    visibility: hidden;
+}
+/* end - plan modify */
