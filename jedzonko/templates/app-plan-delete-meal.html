@@ -1,0 +1,46 @@
+{% extends "__base__.html" %}
+{% block title %}Usuń posiłek z planu{% endblock %}
+{% block content %}
+<div class="dashboard-content border-dashed p-3 m-4 view-height">
+    <div class="row border-bottom border-3 p-1 m-1">
+        <div class="col noPadding">
+            <h3 class="color-header text-uppercase">USUŃ POSIŁEK Z PLANU</h3>
+        </div>
+    </div>
+
+    <div class="schedules-content">
+        <div class="schedules-content-header">
+            <div class="form-group row">
+                <span class="col-sm-2 label-size col-form-label">Nazwa planu</span>
+                <span class="col-sm-10 label-size col-form-label"><b>{{ meal.plan.name }}</b></span>
+            </div>
+        </div>
+
+        <div class="col-12 label-size text-center text-danger">Na pewno chcesz usunąć poniższy posiłek z planu?</div>
+        <table class="table">
+            <thead>
+                <tr class="d-flex">
+                    <th colspan="4" class="col-12">{{ meal.day_name.day_name }}</th>
+                </tr>
+            </thead>
+            <tbody class="text-color-lighter">
+                <tr class="d-flex">
+                    <td class="col-2">{{ meal.meal_name }}</td>
+                    <td class="col-6">{{ meal.recipe.name }}</td>
+                    <td class="col-2 center">
+                        <a href="/plan/{{ meal.plan_id }}/" class="btn btn-info rounded-0 text-light m-1">Wróć do planu</a>
+                    </td>
+                    <td class="col-2 center">
+                        <form method="post">
+                            <input type="hidden" name="meal_id" value="{{ meal.id }}">
+                            <button type="submit" class="btn btn-danger rounded-0 text-light m-1"><b>Usuń posiłek</b></button>
+                            {% csrf_token %}
+                        </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+</div>
+{% endblock content %}

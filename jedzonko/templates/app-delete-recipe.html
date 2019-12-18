@@ -1,0 +1,48 @@
+{% extends "__base__.html" %}
+{% block title %}Usuń przepis z bazy{% endblock %}
+{% block content %}
+<div class="dashboard-content border-dashed p-3 m-4 view-height">
+    <div class="row border-bottom border-3 p-1 m-1">
+        <div class="col noPadding">
+            <h3 class="color-header text-uppercase">USUŃ przepis Z bazy</h3>
+        </div>
+    </div>
+
+    <div class="schedules-content">
+        <div class="schedules-content-header">
+            <div class="form-group row">
+                <span class="col-sm-2 label-size col-form-label">Nazwa przepisu</span>
+                <span class="col-sm-10 label-size col-form-label"><b>{{ recipe.name }}</b></span>
+            </div>
+        </div>
+
+        <div class="col-12 label-size text-center text-danger">
+            Na pewno chcesz usunąć poniższy przepis?
+        </div>
+
+        <table class="table">
+            <thead>
+                <tr class="d-flex">
+                    <th colspan="4" class="col-12">{{ recipe.description }}</th>
+                </tr>
+            </thead>
+        </table>
+{% if plans %}
+        <div class="col-12 label-size text-center text-danger">
+            Ta akcja spowoduje usuniecie przepisu ze wszystkich nastepujacych planow
+        </div>
+        <ul>
+        {% for plan in plans %}
+            <li> {{ plan.plan.name }} </li>
+        {% endfor %}
+        </ul>
+{% endif %}
+        <form method="post">
+            <input type="hidden" name="recipe_id" value="{{ recipe.id }}">
+            <button type="submit" style="float: right" class="btn btn-danger rounded-0 text-light m-1"><b>Usuń posiłek</b></button>
+            {% csrf_token %}
+        </form>
+
+    </div>
+</div>
+{% endblock content %}

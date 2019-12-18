@@ -1,0 +1,14 @@
+{% extends "index-base.html" %}
+{% block title %}{{ page.title }}{% endblock title %}
+{% block content %}
+<section class="padding-medium story bg-light">
+    <div class="container d-flex justify-content-center align-items-center">
+        <div class="row">
+            <div class="col-12 ml-4">
+                <h1 class="pb-1">{{ page.title }}</h1>
+                    {{ page.description|safe }}
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
